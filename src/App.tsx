@@ -1167,11 +1167,15 @@ export default function App() {
               <div className="space-y-3 font-mono text-xs font-extrabold text-slate-500">
                 <div className="flex justify-between items-center pb-2 border-b border-slate-200">
                   <span>{t('ownership.card.minStart')}</span>
-                  <span className="text-slate-900 font-black">$100 USDC</span>
+                  <span className="text-slate-900 font-black">
+                    {language === 'ru' ? '$1 000 USDC' : '$1,000 USDC'}
+                  </span>
                 </div>
                 <div className="flex justify-between items-center pb-2 border-b border-slate-200">
                   <span>{t('ownership.card.recBal')}</span>
-                  <span className="text-slate-900 font-black">$500 – $2,000 USDC</span>
+                  <span className="text-slate-900 font-black">
+                    {language === 'ru' ? '$5 000 – $20 000 USDC' : '$5,000 – $20,000 USDC'}
+                  </span>
                 </div>
                 <div className="flex justify-between items-center pb-1">
                   <span>{t('ownership.card.exitLimits')}</span>

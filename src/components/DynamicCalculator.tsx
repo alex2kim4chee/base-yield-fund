@@ -86,8 +86,8 @@ export default function DynamicCalculator() {
                 <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400 font-mono text-xs">$</span>
                 <input
                   type="number"
-                  min="100"
-                  max="500000"
+                  min="1000"
+                  max="100000"
                   value={depositAmount}
                   onChange={handleAmountChange}
                   className="bg-slate-50 border border-slate-200 rounded-md py-1 pl-6 pr-12 text-right font-mono text-slate-900 text-sm focus:outline-none focus:border-blue-600 w-36 font-semibold"
@@ -98,17 +98,17 @@ export default function DynamicCalculator() {
             
             <input
               type="range"
-              min="100"
-              max="10000"
-              step="100"
-              value={depositAmount > 10000 ? 10000 : depositAmount}
+              min="1000"
+              max="100000"
+              step="1000"
+              value={depositAmount > 100000 ? 100000 : depositAmount}
               onChange={(e) => setDepositAmount(parseInt(e.target.value))}
               className="w-full h-1.5 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-blue-600"
             />
             <div className="flex justify-between text-[9px] font-mono text-slate-400 uppercase tracking-wider">
-              <span>{language === 'ru' ? 'Мин: $100 USDC' : 'Min: $100 USDC'}</span>
-              {depositAmount > 10000 && <span className="text-blue-600 font-bold">{language === 'ru' ? 'Лимит слайдера превышен' : 'Slider Limit Exceeded'}</span>}
-              <span>{language === 'ru' ? 'Макс: $10 000 USDC (Слайдер)' : 'Max: $10,000 USDC (Slider)'}</span>
+              <span>{language === 'ru' ? 'Мин: $1 000 USDC' : 'Min: $1,000 USDC'}</span>
+              {depositAmount > 100000 && <span className="text-blue-600 font-bold">{language === 'ru' ? 'Лимит слайдера превышен' : 'Slider Limit Exceeded'}</span>}
+              <span>{language === 'ru' ? 'Макс: $100 000 USDC (Слайдер)' : 'Max: $100,000 USDC (Slider)'}</span>
             </div>
           </div>
 
