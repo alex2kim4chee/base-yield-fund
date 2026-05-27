@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { ShieldCheck, Activity, Users, Database, Zap, RefreshCw } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 
 interface MockTx {
   id: string;
@@ -12,6 +13,7 @@ interface MockTx {
 }
 
 export default function MetricsDashboard() {
+  const { t, language } = useLanguage();
   const [totalManaged, setTotalManaged] = useState<number>(8421412.50);
   const [managedAccounts, setManagedAccounts] = useState<number>(1482);
   const [txCount, setTxCount] = useState<number>(42912);
@@ -75,6 +77,20 @@ export default function MetricsDashboard() {
     return () => clearInterval(interval);
   }, []);
 
+  const formatTime = (timeStr: string) => {
+    if (timeStr === 'Just now') return t('liveHealth.feed.times.justNow');
+    if (timeStr.includes('s ago')) {
+      return timeStr.replace('s ago', t('liveHealth.feed.times.secondsAgo'));
+    }
+    if (timeStr.includes('m ago')) {
+      return timeStr.replace('m ago', t('liveHealth.feed.times.minutesAgo'));
+    }
+    return timeStr;
+  };
+
+  const actionMap: Record<string, string> = t('liveHealth.feed.actions');
+  const statusMap: Record<string, string> = t('liveHealth.feed.status');
+
   return (
     <div className="space-y-6" id="live-metrics">
       
@@ -87,13 +103,13 @@ export default function MetricsDashboard() {
             <Database className="w-11 h-11" />
           </div>
           <div>
-            <span className="text-[9px] font-bold font-mono text-slate-400 uppercase tracking-widest block">TOTAL USDC POSITION SIZED</span>
+            <span className="text-[9px] font-bold font-mono text-slate-400 uppercase tracking-widest block">{t('liveHealth.metrics.tvl')}</span>
             <span className="text-xl font-mono font-bold tracking-tight text-slate-900 block mt-0.5">
-              ${totalManaged.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+              ${totalManaged.toLocaleString(language === 'ru' ? 'ru-RU' : 'en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
             </span>
           </div>
           <span className="text-[10px] text-emerald-700 font-mono flex items-center gap-1 font-semibold">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" /> Real-time on-chain pooling
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" /> {t('liveHealth.metrics.tvlSub')}
           </span>
         </div>
 
@@ -103,13 +119,13 @@ export default function MetricsDashboard() {
             <Users className="w-11 h-11" />
           </div>
           <div>
-            <span className="text-[9px] font-bold font-mono text-slate-400 uppercase tracking-widest block">MANAGED SECURE ACCOUNTS</span>
+            <span className="text-[9px] font-bold font-mono text-slate-400 uppercase tracking-widest block">{t('liveHealth.metrics.accounts')}</span>
             <span className="text-xl font-mono font-bold tracking-tight text-slate-900 block mt-0.5">
-              {managedAccounts.toLocaleString()}
+              {managedAccounts.toLocaleString(language === 'ru' ? 'ru-RU' : 'en-US')}
             </span>
           </div>
           <span className="text-[10px] text-slate-500 font-mono font-medium">
-            Direct 100% self-custody active
+            {t('liveHealth.metrics.accountsSub')}
           </span>
         </div>
 
@@ -119,13 +135,13 @@ export default function MetricsDashboard() {
             <Activity className="w-11 h-11" />
           </div>
           <div>
-            <span className="text-[9px] font-bold font-mono text-slate-400 uppercase tracking-widest block">AVERAGE PORTFOLIO APY</span>
+            <span className="text-[9px] font-bold font-mono text-slate-400 uppercase tracking-widest block">{t('liveHealth.metrics.apy')}</span>
             <span className="text-xl font-mono font-bold tracking-tight text-emerald-600 block mt-0.5">
               8.94%
             </span>
           </div>
           <span className="text-[10px] text-slate-500 font-mono font-medium">
-            Trailing 30-day net composite
+            {t('liveHealth.metrics.apySub')}
           </span>
         </div>
 
@@ -135,13 +151,13 @@ export default function MetricsDashboard() {
             <ShieldCheck className="w-11 h-11" />
           </div>
           <div>
-            <span className="text-[9px] font-bold font-mono text-slate-400 uppercase tracking-widest block">TRANSACTIONS PROCESSED</span>
+            <span className="text-[9px] font-bold font-mono text-slate-400 uppercase tracking-widest block">{t('liveHealth.metrics.txs')}</span>
             <span className="text-xl font-mono font-bold tracking-tight text-slate-900 block mt-0.5">
-              {txCount.toLocaleString()}
+              {txCount.toLocaleString(language === 'ru' ? 'ru-RU' : 'en-US')}
             </span>
           </div>
           <span className="text-[10px] text-emerald-700 font-mono flex items-center gap-0.5 font-semibold">
-            <Zap className="w-3 h-3 text-emerald-600 fill-current" /> 100% execute safety rate
+            <Zap className="w-3 h-3 text-emerald-600 fill-current" /> {t('liveHealth.metrics.txsSub')}
           </span>
         </div>
 
@@ -151,11 +167,11 @@ export default function MetricsDashboard() {
       <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-tiny">
         <div className="flex justify-between items-center pb-4 border-b border-slate-200 mb-4">
           <div className="space-y-0.5">
-            <h4 className="text-sm font-bold text-slate-900">Live On-Chain Transaction Feed</h4>
-            <p className="text-xs text-slate-500">Showing recent execution logs on Base Layer-2.</p>
+            <h4 className="text-sm font-bold text-slate-900">{t('liveHealth.feed.title')}</h4>
+            <p className="text-xs text-slate-500">{t('liveHealth.feed.subline')}</p>
           </div>
           <div className="flex items-center gap-1 bg-slate-50 border border-slate-200 px-2.5 py-1 rounded text-[10px] font-mono text-blue-600 font-bold uppercase">
-            <RefreshCw className="w-3 h-3 animate-spin text-blue-600" /> LIVE LEDGER PULL
+            <RefreshCw className="w-3 h-3 animate-spin text-blue-600" /> {t('liveHealth.feed.badge')}
           </div>
         </div>
 
@@ -163,12 +179,12 @@ export default function MetricsDashboard() {
           <table className="w-full text-left text-xs text-slate-600 border-collapse">
             <thead>
               <tr className="border-b border-slate-200 text-slate-400 uppercase tracking-wider font-semibold text-[9px] font-mono">
-                <th className="py-2.5">Smart Account</th>
-                <th className="py-2.5">Underlying Action</th>
-                <th className="py-2.5 text-right">Volume</th>
-                <th className="py-2.5 pl-6">Target Route</th>
-                <th className="py-2.5 text-right">Accrual Status</th>
-                <th className="py-2.5 text-right pr-2">Age</th>
+                <th className="py-2.5">{t('liveHealth.feed.headers.account')}</th>
+                <th className="py-2.5">{t('liveHealth.feed.headers.action')}</th>
+                <th className="py-2.5 text-right">{t('liveHealth.feed.headers.volume')}</th>
+                <th className="py-2.5 pl-6">{t('liveHealth.feed.headers.route')}</th>
+                <th className="py-2.5 text-right">{t('liveHealth.feed.headers.status')}</th>
+                <th className="py-2.5 text-right pr-2">{t('liveHealth.feed.headers.age')}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 font-medium">
@@ -180,15 +196,15 @@ export default function MetricsDashboard() {
                 return (
                   <tr key={tx.id} className="hover:bg-slate-50 transition-colors">
                     <td className="py-2.5 font-mono text-slate-500">{tx.account}</td>
-                    <td className={`py-2.5 font-bold ${actionColor}`}>{tx.action}</td>
+                    <td className={`py-2.5 font-bold ${actionColor}`}>{actionMap[tx.action] || tx.action}</td>
                     <td className="py-2.5 font-mono text-right font-bold text-slate-900">{tx.amount}</td>
                     <td className="py-2.5 text-slate-700 pl-6">{tx.protocol}</td>
                     <td className="py-2.5 text-right">
                       <span className="bg-emerald-50 text-emerald-700 border border-emerald-200 px-2.5 py-0.5 rounded text-[9px] font-mono font-bold uppercase">
-                        {tx.status}
+                        {statusMap[tx.status] || tx.status}
                       </span>
                     </td>
-                    <td className="py-2.5 text-right font-mono text-slate-400 pr-2">{tx.time}</td>
+                    <td className="py-2.5 text-right font-mono text-slate-400 pr-2">{formatTime(tx.time)}</td>
                   </tr>
                 );
               })}

@@ -20,13 +20,14 @@ import {
   Globe2,
   FileCheck
 } from 'lucide-react';
-import { PROTOCOLS, NOT_DO_PRINCIPLES, PRE_TRADE_CHECKS } from './data';
 import DynamicCalculator from './components/DynamicCalculator';
 import AIPositionSimulator from './components/AIPositionSimulator';
 import MetricsDashboard from './components/MetricsDashboard';
 import FAQAccordion from './components/FAQAccordion';
+import { useLanguage } from './context/LanguageContext';
 
 export default function App() {
+  const { t, language, setLanguage } = useLanguage();
   const [selectedTechSection, setSelectedTechSection] = useState<string>('base');
   const [strategyFilter, setStrategyFilter] = useState<string>('All');
   const [accessModalOpen, setAccessModalOpen] = useState<boolean>(false);
@@ -60,25 +61,32 @@ export default function App() {
     }
   };
 
-  // Tech items list
-  const techItems = [
-    { id: 'base', title: 'Base Blockchain', desc: 'Secure Ethereum L2 backed and maintained by Coinbase. Transactions cost under $0.01 with total instant settlement.' },
-    { id: 'erc4337', title: 'ERC-4337 Smart Accounts', desc: 'Hardware-passkey cryptographical accounts capable of batch action execution, custom recovery thresholds, and gas abstraction.' },
-    { id: 'morpho', title: 'Morpho Protocol', desc: 'Overcollateralized decentralized lending optimized by Gauntlet and Steakhouse risk curation teams. Over $4B TVL.' },
-    { id: 'moonwell', title: 'Moonwell Protocol', desc: 'Direct-lending liquidity vaults native to Base, dynamically responding to live retail credit demands.' },
-    { id: 'aerodrome', title: 'Aerodrome Finance', desc: 'Concentrated stablecoin trading pools generating raw trading fee volumes on Base\'s largest liquidity DEX.' },
-    { id: 'fluid', title: 'Fluid Protocol', desc: 'Dynamic liquidity routing engine optimizing utilization across credit and debt markets.' },
-    { id: 'avantis', title: 'Avantis', desc: 'Institutional peer-to-pool liquidity vaults supporting perpetual exchange trades on Base.' },
-    { id: 'aave', title: 'Aave v3 / Spark', desc: 'Established DeFi protocols representing the absolute blue-chip safety anchors on Base ecosystem.' },
-    { id: 'claude', title: 'Claude AI + Base MCP', desc: 'Autonomous monitoring scanner synthesizing on-chain rates directly against predefined safety risk buffers.' }
-  ];
+  // Tech items list pulled dynamically based on translation keys
+  const techItemIds = ['base', 'erc4337', 'morpho', 'moonwell', 'aerodrome', 'fluid', 'avantis', 'aave', 'claude'];
+  const techItems = techItemIds.map(id => ({
+    id,
+    title: t(`tech.items.${id}.title`),
+    desc: t(`tech.items.${id}.desc`)
+  }));
 
+  const protocols = t('protocols');
   const filteredProtocols = strategyFilter === 'All' 
-    ? PROTOCOLS 
-    : PROTOCOLS.filter(p => p.riskTier === strategyFilter);
+    ? protocols 
+    : protocols.filter((p: any) => p.riskTier === strategyFilter);
+
+  const filterLabels: Record<string, string> = {
+    All: language === 'ru' ? 'Все' : 'All',
+    Conservative: language === 'ru' ? 'Консервативный' : 'Conservative',
+    Moderate: language === 'ru' ? 'Умеренный' : 'Moderate',
+    Elevated: language === 'ru' ? 'Повышенный' : 'Elevated',
+    Active: language === 'ru' ? 'Активный' : 'Active'
+  };
+
+  const notDoPrinciples = t('notDoPrinciples');
+  const preTradeChecks = t('preTradeChecks');
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-800 antialiased font-sans selection:bg-blue-600 selection:text-white pb-12">
+    <div className="min-h-screen bg-slate-50 text-slate-800 antialiased font-sans selection:bg-blue-600 selection:text-white pb-12 text-left">
       
       {/* HEADER NAVBAR */}
       <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200 mx-auto w-full">
@@ -93,36 +101,60 @@ export default function App() {
               <div className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-emerald-500 ring-2 ring-white animate-pulse" />
             </div>
             <div>
-              <span className="text-slate-900 font-bold text-sm tracking-tight block">Base Yield Fund</span>
-              <span className="text-[10px] text-slate-400 font-mono block uppercase font-bold">AI-Assisted Self-Custody</span>
+              <span className="text-slate-900 font-bold text-sm tracking-tight block">{t('nav.title')}</span>
+              <span className="text-[10px] text-slate-400 font-mono block uppercase font-bold">{t('nav.subtitle')}</span>
             </div>
           </div>
 
           {/* Quick Stats Banner for Top Nav */}
           <div className="hidden lg:flex items-center gap-6 text-xs text-slate-500 font-mono font-semibold">
             <div>
-              <span className="text-slate-400 mr-1.5 uppercase font-bold">Compound Pool:</span>
+              <span className="text-slate-400 mr-1.5 uppercase font-bold">{t('nav.compoundPool')}</span>
               <span className="text-slate-900 font-bold animate-pulse">$8,421,412.50 USDC</span>
             </div>
             <div>
-              <span className="text-slate-400 mr-1.5 uppercase font-bold">Net Avg APY:</span>
+              <span className="text-slate-400 mr-1.5 uppercase font-bold">{t('nav.netAvgApy')}</span>
               <span className="text-emerald-600 font-bold">8.94%</span>
             </div>
           </div>
 
-          {/* Right Action Trigger */}
+          {/* Right Action Trigger with Switcher */}
           <div className="flex items-center gap-3">
+            {/* Sleek Language Switcher */}
+            <div className="flex bg-slate-100 p-0.5 rounded-lg border border-slate-200 font-mono text-[10px] font-bold shadow-tiny">
+              <button
+                onClick={() => setLanguage('ru')}
+                className={`py-1 px-2.5 rounded-md transition-all cursor-pointer ${
+                  language === 'ru'
+                    ? 'bg-white text-blue-600 shadow-sm'
+                    : 'text-slate-500 hover:text-slate-900'
+                }`}
+              >
+                RU
+              </button>
+              <button
+                onClick={() => setLanguage('en')}
+                className={`py-1 px-2.5 rounded-md transition-all cursor-pointer ${
+                  language === 'en'
+                    ? 'bg-white text-blue-600 shadow-sm'
+                    : 'text-slate-500 hover:text-slate-900'
+                }`}
+              >
+                EN
+              </button>
+            </div>
+
             <button 
               onClick={() => setAccessModalOpen(true)}
               className="bg-slate-100 hover:bg-slate-200 text-xs border border-slate-200 py-1.5 px-3 rounded-lg font-bold text-slate-700 transition-all cursor-pointer hidden sm:inline-block"
             >
-              Verify Positions
+              {t('nav.verify')}
             </button>
             <button 
               onClick={() => setAccessModalOpen(true)}
               className="bg-blue-600 hover:bg-blue-700 text-xs text-white py-1.5 px-3.5 rounded-lg font-bold transition-all shadow-sm cursor-pointer"
             >
-              Get early access →
+              {t('nav.getAccess')}
             </button>
           </div>
 
@@ -142,18 +174,18 @@ export default function App() {
             
             {/* Tagline */}
             <div className="inline-flex items-center gap-2 bg-blue-50 border border-blue-100 px-3 py-1 rounded-full text-xs font-mono font-bold text-blue-600 text-center mx-auto shadow-tiny">
-              <span className="w-1.5 h-1.5 bg-blue-600 rounded-full animate-pulse" /> Coinbase Smart Account Infrastructure
+              <span className="w-1.5 h-1.5 bg-blue-600 rounded-full animate-pulse" /> {t('hero.tagline')}
             </div>
 
             {/* Headline */}
             <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-slate-900 tracking-tight leading-[1.12]">
-              Your money. Your account.<br className="hidden sm:inline" />
-              <span className="bg-gradient-to-r from-slate-900 via-slate-800 to-blue-600 bg-clip-text text-transparent">Institutional-grade DeFi yield — managed for you.</span>
+              {t('hero.title1')}<br className="hidden sm:inline" />
+              <span className="bg-gradient-to-r from-slate-900 via-slate-800 to-blue-600 bg-clip-text text-transparent">{t('hero.title2')}</span>
             </h1>
 
             {/* Subheadline */}
             <p className="text-slate-600 text-sm sm:text-base md:text-lg leading-relaxed max-w-2xl mx-auto font-medium">
-              We run an AI-assisted yield strategy on Base blockchain — the same infrastructure used by the world's top DeFi protocols — so you earn <span className="text-emerald-600 font-bold">4–40% APY</span> on your dollars without lifting a finger.
+              {t('hero.subline')}
             </p>
 
             {/* CTAs */}
@@ -162,26 +194,26 @@ export default function App() {
                 onClick={() => setAccessModalOpen(true)}
                 className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white py-3 px-8 rounded-lg font-bold transition-all shadow-sm text-center text-sm cursor-pointer flex items-center justify-center gap-2"
               >
-                Get early access <ArrowRight className="w-4 h-4" />
+                {t('hero.ctaAccess')} <ArrowRight className="w-4 h-4" />
               </button>
               <a 
                 href="#yield-estimator"
                 className="w-full sm:w-auto bg-white border border-slate-200 hover:bg-slate-50 py-3 px-8 rounded-lg text-xs text-center text-slate-700 transition-all font-bold flex items-center justify-center gap-1.5 shadow-tiny"
               >
-                Estimate APY Returns
+                {t('hero.ctaCalculate')}
               </a>
             </div>
 
             {/* Trust line */}
             <div className="pt-8 border-t border-slate-150 grid grid-cols-1 sm:grid-cols-3 gap-3 max-w-xl mx-auto text-[11px] font-mono font-bold text-slate-400">
               <span className="flex items-center justify-center gap-1.5">
-                <Lock className="w-3.5 h-3.5 text-blue-600" /> 100% self-custody
+                <Lock className="w-3.5 h-3.5 text-blue-600" /> {t('hero.trustCustody')}
               </span>
               <span className="flex items-center justify-center gap-1.5">
-                <Check className="w-3.5 h-3.5 text-emerald-600" /> Every transaction approved
+                <Check className="w-3.5 h-3.5 text-emerald-600" /> {t('hero.trustApproval')}
               </span>
               <span className="flex items-center justify-center gap-1.5 text-slate-500 font-semibold">
-                ● Built on Coinbase Stack
+                ● {t('hero.trustCoinbase')}
               </span>
             </div>
 
@@ -196,7 +228,7 @@ export default function App() {
       </section>
 
       {/* SECTION 1 — THE PROBLEM */}
-      <section className="py-20 border-b border-slate-200 bg-slate-50 relative" id="the-problem">
+      <section className="py-20 border-b border-slate-200 bg-slate-50 relative text-left" id="the-problem">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           
           <div className="flex flex-col lg:flex-row gap-12 items-center">
@@ -204,71 +236,71 @@ export default function App() {
             {/* Left text */}
             <div className="flex-1 space-y-6">
               <span className="text-xs font-mono uppercase tracking-widest text-blue-600 font-bold">
-                SECTION 01 — THE PROBLEM
+                {t('problem.tagline')}
               </span>
               <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 tracking-tight leading-tight">
-                DeFi pays more. Most people can't access it.
+                {t('problem.title')}
               </h2>
               <div className="space-y-4 text-xs sm:text-sm text-slate-600 leading-relaxed font-medium">
                 <p>
-                  Stablecoins sitting in savings accounts earn 0.5%. The same dollar deployed on Base blockchain earns <span className="text-emerald-600 font-bold">4–40% APY</span> — verified, on-chain, every single day.
+                  {t('problem.subline1')}
                 </p>
                 <p>
-                  The gap isn't knowledge. It's structural infrastructure. Running a serious DeFi strategy requires:
+                  {t('problem.subline2')}
                 </p>
               </div>
 
               {/* Grid of highlights */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2 text-left">
                 <div className="p-4 bg-white border border-slate-200 rounded-xl space-y-1 shadow-tiny">
                   <span className="text-xs font-bold text-slate-900 flex items-center gap-2">
-                    <span className="w-1.5 h-1.5 bg-blue-600 rounded-full" /> Programmable Wallet
+                    <span className="w-1.5 h-1.5 bg-blue-600 rounded-full" /> {t('problem.walletTitle')}
                   </span>
-                  <p className="text-[11px] text-slate-500 font-medium">Requires ERC-4337 smart-contract capabilities to bundle operations efficiently.</p>
+                  <p className="text-[11px] text-slate-500 font-medium">{t('problem.walletDesc')}</p>
                 </div>
                 <div className="p-4 bg-white border border-slate-200 rounded-xl space-y-1 shadow-tiny">
                   <span className="text-xs font-bold text-slate-900 flex items-center gap-2">
-                    <span className="w-1.5 h-1.5 bg-blue-600 rounded-full" /> Real-time Tracking
+                    <span className="w-1.5 h-1.5 bg-blue-600 rounded-full" /> {t('problem.trackingTitle')}
                   </span>
-                  <p className="text-[11px] text-slate-500 font-medium">Hourly monitoring of yields across pools to capture peaks and bypass drop-offs.</p>
+                  <p className="text-[11px] text-slate-500 font-medium">{t('problem.trackingDesc')}</p>
                 </div>
                 <div className="p-4 bg-white border border-slate-200 rounded-xl space-y-1 shadow-tiny">
                   <span className="text-xs font-bold text-slate-900 flex items-center gap-2">
-                    <span className="w-1.5 h-1.5 bg-blue-600 rounded-full" /> Robust Risk Assessment
+                    <span className="w-1.5 h-1.5 bg-blue-600 rounded-full" /> {t('problem.riskTitle')}
                   </span>
-                  <p className="text-[11px] text-slate-500 font-medium">Evaluating lock solvency caps, bad debt ratios, and dynamic collateral levels.</p>
+                  <p className="text-[11px] text-slate-500 font-medium">{t('problem.riskDesc')}</p>
                 </div>
                 <div className="p-4 bg-white border border-slate-200 rounded-xl space-y-1 shadow-tiny">
                   <span className="text-xs font-bold text-slate-900 flex items-center gap-2">
-                    <span className="w-1.5 h-1.5 bg-blue-600 rounded-full" /> Tx Construction
+                    <span className="w-1.5 h-1.5 bg-blue-600 rounded-full" /> {t('problem.mathTitle')}
                   </span>
-                  <p className="text-[11px] text-slate-500 font-medium">Crafting exact batch smart contracts and routing scripts to save on execution gas.</p>
+                  <p className="text-[11px] text-slate-500 font-medium">{t('problem.mathDesc')}</p>
                 </div>
               </div>
 
               <div className="pt-2">
                 <p className="text-xs text-slate-500 font-mono italic font-semibold">
-                  "We've built all of that. You just approve."
+                  {t('problem.quote')}
                 </p>
               </div>
             </div>
 
             {/* Right panel: Comparative Visualization panel */}
-            <div className="w-full lg:w-[420px] bg-white border border-slate-200 p-6 rounded-2xl flex flex-col justify-between space-y-8 relative overflow-hidden shrink-0 shadow-sm">
+            <div className="w-full lg:w-[420px] bg-white border border-slate-200 p-6 rounded-2xl flex flex-col justify-between space-y-8 relative overflow-hidden shrink-0 shadow-sm text-left">
               <div className="absolute top-0 right-0 p-3 bg-blue-50 text-blue-600 rounded-bl-xl font-mono font-bold text-[10px] border-l border-b border-blue-100">
-                APY COMPARE
+                {t('problem.badge')}
               </div>
               
               <div className="space-y-1">
-                <h4 className="text-sm font-semibold text-slate-900">Compound Rate Spread</h4>
-                <p className="text-xs text-slate-500 font-medium">Comparing traditional dollars vs Base positions.</p>
+                <h4 className="text-sm font-semibold text-slate-900">{t('problem.compareTitle')}</h4>
+                <p className="text-xs text-slate-500 font-medium">{t('problem.compareDesc')}</p>
               </div>
 
               <div className="space-y-4 py-2">
                 {/* TradFi bar */}
                 <div className="space-y-1">
                   <div className="flex justify-between items-center text-xs font-mono font-bold">
-                    <span className="text-slate-500">Traditional Bank Account</span>
+                    <span className="text-slate-500">{t('problem.compareTrad')}</span>
                     <span className="text-slate-700">0.5% APY</span>
                   </div>
                   <div className="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden">
@@ -279,7 +311,7 @@ export default function App() {
                 {/* DeFi bar */}
                 <div className="space-y-1">
                   <div className="flex justify-between items-center text-xs font-mono font-bold">
-                    <span className="text-slate-700">Base Yield Fund Blended Rate</span>
+                    <span className="text-slate-700">{t('problem.compareFund')}</span>
                     <span className="text-emerald-600">8.94% - 25% APY</span>
                   </div>
                   <div className="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden">
@@ -290,10 +322,10 @@ export default function App() {
 
               <div className="bg-slate-50 p-3 rounded-lg border border-slate-200 text-[11px] font-mono text-slate-600 space-y-1">
                 <div className="text-slate-900 font-bold flex items-center gap-1">
-                  <Info className="w-3.5 h-3.5 text-blue-600 shrink-0" /> Target Delta Result
+                  <Info className="w-3.5 h-3.5 text-blue-600 shrink-0" /> {t('problem.deltaTitle')}
                 </div>
                 <p className="leading-relaxed font-semibold">
-                  Every $1,000 sitting in standard savings earns roughly $5 annually. Deployed actively on Base, that same dollar compiles up to $250 in expected yield.
+                  {t('problem.deltaText')}
                 </p>
               </div>
             </div>
@@ -304,18 +336,18 @@ export default function App() {
       </section>
 
       {/* SECTION 2 — WHAT WE DO */}
-      <section className="py-20 border-b border-slate-200 bg-white relative" id="what-we-do">
+      <section className="py-20 border-b border-slate-200 bg-white relative text-left" id="what-we-do">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           
           <div className="text-center max-w-3xl mx-auto space-y-3 mb-12">
             <span className="text-xs font-mono uppercase tracking-widest text-blue-600 font-bold block">
-              SECTION 02 — WHAT WE DO
+              {t('whatWeDo.tagline')}
             </span>
             <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 tracking-tight">
-              A yield strategy. Managed by AI. Controlled by you.
+              {t('whatWeDo.title')}
             </h2>
             <p className="text-slate-600 text-sm md:text-base leading-relaxed font-medium">
-              We manage your Base Account — Coinbase's smart wallet wrapper — the same way a wealth manager watches a portfolio. The difference: you never give up cryptographic self-custody.
+              {t('whatWeDo.subline')}
             </p>
           </div>
 
@@ -325,60 +357,60 @@ export default function App() {
           </div>
 
           {/* How it works steps grid */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-left">
             <div className="bg-slate-50 border border-slate-200 p-6 rounded-xl space-y-3 shadow-tiny">
-              <span className="text-xs font-mono text-blue-600 font-bold block animate-pulse">01 / ACCOUNT SETUP</span>
-              <h4 className="text-base font-bold text-slate-900">Open a Base Account</h4>
+              <span className="text-xs font-mono text-blue-600 font-bold block animate-pulse">01 / {language === 'ru' ? 'НАСТРОЙКА АККАУНТА' : 'ACCOUNT SETUP'}</span>
+              <h4 className="text-base font-bold text-slate-900">{t('whatWeDo.step1Title')}</h4>
               <p className="text-xs text-slate-600 font-medium leading-relaxed">
-                Takes just 2 minutes. Powered entirely by Coinbase's smart passkey wallet backend underneath.
+                {t('whatWeDo.step1Desc')}
               </p>
             </div>
             <div className="bg-slate-50 border border-slate-200 p-6 rounded-xl space-y-3 shadow-tiny">
-              <span className="text-xs font-mono text-blue-600 font-bold block animate-pulse">02 / STABLECOIN DEPOSIT</span>
-              <h4 className="text-base font-bold text-slate-900">Fund account with USDC</h4>
+              <span className="text-xs font-mono text-blue-600 font-bold block animate-pulse">02 / {language === 'ru' ? 'ДЕПОЗИТ СТЕЙБЛКОИНА' : 'STABLECOIN DEPOSIT'}</span>
+              <h4 className="text-base font-bold text-slate-900">{t('whatWeDo.step2Title')}</h4>
               <p className="text-xs text-slate-600 font-medium leading-relaxed">
-                Fund with the leading fully-backed, US-regulated stablecoin pegged 1:1 to the US dollar.
+                {t('whatWeDo.step2Desc')}
               </p>
             </div>
             <div className="bg-slate-50 border border-slate-200 p-6 rounded-xl space-y-3 shadow-tiny">
-              <span className="text-xs font-mono text-blue-600 font-bold block animate-pulse">03 / CONTINUOUS SCANS</span>
-              <h4 className="text-base font-bold text-slate-900">AI daily opportunity sweeps</h4>
+              <span className="text-xs font-mono text-blue-600 font-bold block animate-pulse">03 / {language === 'ru' ? 'ПОСТОЯННЫЙ СКАН' : 'CONTINUOUS SCANS'}</span>
+              <h4 className="text-base font-bold text-slate-900">{t('whatWeDo.step3Title')}</h4>
               <p className="text-xs text-slate-600 font-medium leading-relaxed">
-                Our MCP bot scans across 6+ protocols (Morpho, Moonwell, Fluid, Aerodrome, Avantis) hourly for yield-risk metrics.
+                {t('whatWeDo.step3Desc')}
               </p>
             </div>
             <div className="bg-slate-50 border border-slate-200 p-6 rounded-xl space-y-3 shadow-tiny">
-              <span className="text-xs font-mono text-blue-600 font-bold block animate-pulse">04 / MEMO ANALYSIS</span>
-              <h4 className="text-base font-bold text-slate-900">We prepare transaction sheets</h4>
+              <span className="text-xs font-mono text-blue-600 font-bold block animate-pulse">04 / {language === 'ru' ? 'АНАЛИЗ ПАРАМЕТРОВ' : 'MEMO ANALYSIS'}</span>
+              <h4 className="text-base font-bold text-slate-900">{t('whatWeDo.step4Title')}</h4>
               <p className="text-xs text-slate-600 font-medium leading-relaxed">
-                We craft the direct gas calldata and map precise risk matrices, explaining realistic dollar downside.
+                {t('whatWeDo.step4Desc')}
               </p>
             </div>
             <div className="bg-slate-50 border border-slate-200 p-6 rounded-xl space-y-3 shadow-tiny">
-              <span className="text-xs font-mono text-blue-600 font-bold block animate-pulse">05 / USER SIGNATURE</span>
-              <h4 className="text-base font-bold text-slate-900">Approve with one tap</h4>
+              <span className="text-xs font-mono text-blue-600 font-bold block animate-pulse">05 / {language === 'ru' ? 'ПОДПИСЬ ПОЛЬЗОВАТЕЛЯ' : 'USER SIGNATURE'}</span>
+              <h4 className="text-base font-bold text-slate-900">{t('whatWeDo.step5Title')}</h4>
               <p className="text-xs text-slate-600 font-medium leading-relaxed">
-                You receive recommendations on your device. Confirm using secure hardware locks or Apple FaceID.
+                {t('whatWeDo.step5Desc')}
               </p>
             </div>
             <div className="bg-slate-50 border border-slate-200 p-6 rounded-xl space-y-3 shadow-tiny">
-              <span className="text-xs font-mono text-blue-600 font-bold block animate-pulse">06 / EARN YIELD</span>
-              <h4 className="text-base font-bold text-slate-900">Automatic compounding</h4>
+              <span className="text-xs font-mono text-blue-600 font-bold block animate-pulse">06 / {language === 'ru' ? 'ПОЛУЧЕНИЕ APY' : 'EARN YIELD'}</span>
+              <h4 className="text-base font-bold text-slate-900">{t('whatWeDo.step6Title')}</h4>
               <p className="text-xs text-slate-600 font-medium leading-relaxed">
-                Yield accrues directly in your self-custody wallet, automatically compounding to raise your position value.
+                {t('whatWeDo.step6Desc')}
               </p>
             </div>
           </div>
 
           <div className="mt-8 p-4 bg-blue-50 border border-blue-100 rounded-xl text-center text-xs text-slate-700 font-medium shadow-tiny">
-            <strong>Custody proof:</strong> You see and sign every underlying blockchain transaction. Base Yield Fund never holds administrative custody over your keys.
+            {t('whatWeDo.custodyProof')}
           </div>
 
         </div>
       </section>
 
       {/* SECTION 3 — THE TECHNOLOGY */}
-      <section className="py-20 border-b border-slate-200 bg-slate-50 relative" id="the-technology">
+      <section className="py-20 border-b border-slate-200 bg-slate-50 relative text-left" id="the-technology">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           
           <div className="flex flex-col lg:flex-row gap-12 items-start">
@@ -387,13 +419,13 @@ export default function App() {
             <div className="w-full lg:w-[380px] space-y-6 shrink-0 z-10">
               <div className="space-y-1">
                 <span className="text-xs font-mono uppercase tracking-widest text-blue-600 font-bold block">
-                  SECTION 03 — THE TECHNOLOGY
+                  {t('tech.tagline')}
                 </span>
                 <h2 className="text-3xl font-bold text-slate-900 tracking-tight leading-tight">
-                  Built on the same stack as the world's top DeFi funds.
+                  {t('tech.title')}
                 </h2>
                 <p className="text-xs text-slate-600 mt-2 leading-relaxed font-medium">
-                  We integrate directly with secure, audited, and open-source blue-chip protocols. Click any stack vector to inspect its architecture.
+                  {t('tech.subline')}
                 </p>
               </div>
 
@@ -403,7 +435,7 @@ export default function App() {
                   <button
                     key={item.id}
                     onClick={() => setSelectedTechSection(item.id)}
-                    className={`w-full text-left p-3.5 rounded-xl border transition-all text-xs font-mono flex justify-between items-center ${
+                    className={`w-full text-left p-3.5 rounded-xl border transition-all text-xs font-mono flex justify-between items-center cursor-pointer ${
                       selectedTechSection === item.id 
                         ? 'bg-blue-50 border-blue-600 text-slate-900 font-extrabold' 
                         : 'bg-white border-slate-200 text-slate-600 hover:border-slate-300'
@@ -417,15 +449,15 @@ export default function App() {
             </div>
 
             {/* Right: Selected item interactive details console */}
-            <div className="flex-1 bg-white border border-slate-200 rounded-2xl p-6 md:p-8 min-h-[380px] flex flex-col justify-between relative overflow-hidden w-full shadow-sm">
+            <div className="flex-1 bg-white border border-slate-200 rounded-2xl p-6 md:p-8 min-h-[380px] flex flex-col justify-between relative overflow-hidden w-full shadow-sm text-left">
               {/* Corner tech accent grid */}
               <div className="absolute top-0 right-0 p-4 font-mono text-[9px] text-slate-400 bg-slate-50 select-none rounded-bl-xl border-l border-b border-slate-200 font-bold">
-                STACK_ID: {selectedTechSection.toUpperCase()}
+                {t('tech.cornerBadge')}{selectedTechSection.toUpperCase()}
               </div>
 
               <div className="space-y-6">
                 <span className="text-[10px] font-mono bg-blue-50 px-2.5 py-1 rounded text-blue-600 font-bold uppercase">
-                  ACTIVE DESTRUCTURING SPECS
+                  {t('tech.activeSpecs')}
                 </span>
 
                 <div className="space-y-3">
@@ -441,11 +473,11 @@ export default function App() {
                 {selectedTechSection === 'base' && (
                   <div className="grid grid-cols-2 gap-4 text-xs font-mono border-t border-slate-200 pt-4 bg-slate-50 p-4 rounded-xl">
                     <div>
-                      <span className="text-slate-400 block font-bold uppercase text-[9px]">TVL deployed</span>
+                      <span className="text-slate-400 block font-bold uppercase text-[9px]">{t('tech.labels.tvlDeployed')}</span>
                       <span className="text-slate-900 font-extrabold block mt-0.5">$10 Billion+</span>
                     </div>
                     <div>
-                      <span className="text-slate-400 block font-bold uppercase text-[9px]">Average gas cost</span>
+                      <span className="text-slate-400 block font-bold uppercase text-[9px]">{t('tech.labels.avgGas')}</span>
                       <span className="text-emerald-600 font-extrabold block mt-0.5">&lt; $0.01 USDC</span>
                     </div>
                   </div>
@@ -454,12 +486,12 @@ export default function App() {
                 {selectedTechSection === 'erc4337' && (
                   <div className="grid grid-cols-2 gap-4 text-xs font-mono border-t border-slate-200 pt-4 bg-slate-50 p-4 rounded-xl">
                     <div>
-                      <span className="text-slate-400 block font-bold uppercase text-[9px]">Primary benefits</span>
-                      <span className="text-slate-900 font-extrabold block mt-0.5">Batch execution, passkey signature</span>
+                      <span className="text-slate-400 block font-bold uppercase text-[9px]">{t('tech.labels.primaryBenefits')}</span>
+                      <span className="text-slate-900 font-extrabold block mt-0.5">{language === 'ru' ? 'Пакетные транзакции, ключи passkey' : 'Batch execution, passkey signature'}</span>
                     </div>
                     <div>
-                      <span className="text-slate-400 block font-bold uppercase text-[9px]">Authentication standard</span>
-                      <span className="text-slate-900 font-extrabold block mt-0.5">Biometric enclave passkeys</span>
+                      <span className="text-slate-400 block font-bold uppercase text-[9px]">{t('tech.labels.authStandard')}</span>
+                      <span className="text-slate-900 font-extrabold block mt-0.5">{language === 'ru' ? 'Биометрические ключи' : 'Biometric enclave passkeys'}</span>
                     </div>
                   </div>
                 )}
@@ -467,11 +499,11 @@ export default function App() {
                 {selectedTechSection === 'morpho' && (
                   <div className="grid grid-cols-2 gap-4 text-xs font-mono border-t border-slate-200 pt-4 bg-slate-50 p-4 rounded-xl">
                     <div>
-                      <span className="text-slate-400 block font-bold uppercase text-[9px]">Risk curation teams</span>
+                      <span className="text-slate-400 block font-bold uppercase text-[9px]">{t('tech.labels.riskCuration')}</span>
                       <span className="text-slate-900 font-extrabold block mt-0.5">Gauntlet / Steakhouse Prime</span>
                     </div>
                     <div>
-                      <span className="text-slate-400 block font-bold uppercase text-[9px]">Audited state code</span>
+                      <span className="text-slate-400 block font-bold uppercase text-[9px]">{t('tech.labels.auditedCode')}</span>
                       <span className="text-emerald-600 font-extrabold block mt-0.5">100% Open source Verified</span>
                     </div>
                   </div>
@@ -480,11 +512,11 @@ export default function App() {
                 {selectedTechSection === 'moonwell' && (
                   <div className="grid grid-cols-2 gap-4 text-xs font-mono border-t border-slate-200 pt-4 bg-slate-50 p-4 rounded-xl">
                     <div>
-                      <span className="text-slate-400 block font-bold uppercase text-[9px]">Typical lending rates</span>
+                      <span className="text-slate-400 block font-bold uppercase text-[9px]">{t('tech.labels.lendingRates')}</span>
                       <span className="text-slate-900 font-extrabold block mt-0.5">7% - 12% variables</span>
                     </div>
                     <div>
-                      <span className="text-slate-400 block font-bold uppercase text-[9px]">Primary system health</span>
+                      <span className="text-slate-400 block font-bold uppercase text-[9px]">{t('tech.labels.systemHealth')}</span>
                       <span className="text-emerald-600 font-extrabold block mt-0.5">$15M+ USDC Depth</span>
                     </div>
                   </div>
@@ -493,11 +525,11 @@ export default function App() {
                 {selectedTechSection === 'aerodrome' && (
                   <div className="grid grid-cols-2 gap-4 text-xs font-mono border-t border-slate-200 pt-4 bg-slate-50 p-4 rounded-xl">
                     <div>
-                      <span className="text-slate-400 block font-bold uppercase text-[9px]">Ecosystem volume share</span>
+                      <span className="text-slate-400 block font-bold uppercase text-[9px]">{t('tech.labels.volumeShare')}</span>
                       <span className="text-slate-900 font-extrabold block mt-0.5">#1 DEX on Base network</span>
                     </div>
                     <div>
-                      <span className="text-slate-400 block font-bold uppercase text-[9px]">LP pool yields</span>
+                      <span className="text-slate-400 block font-bold uppercase text-[9px]">{t('tech.labels.lpYields')}</span>
                       <span className="text-emerald-600 font-extrabold block mt-0.5">20% - 40% stable ranges</span>
                     </div>
                   </div>
@@ -506,11 +538,11 @@ export default function App() {
                 {selectedTechSection === 'avantis' && (
                   <div className="grid grid-cols-2 gap-4 text-xs font-mono border-t border-slate-200 pt-4 bg-slate-50 p-4 rounded-xl">
                     <div>
-                      <span className="text-slate-400 block font-bold uppercase text-[9px]">Liquidity backing pool</span>
+                      <span className="text-slate-400 block font-bold uppercase text-[9px]">{t('tech.labels.backingPool')}</span>
                       <span className="text-slate-900 font-extrabold block mt-0.5">$45M+ TVL stable depth</span>
                     </div>
                     <div>
-                      <span className="text-slate-400 block font-bold uppercase text-[9px]">Yield drivers</span>
+                      <span className="text-slate-400 block font-bold uppercase text-[9px]">{t('tech.labels.yieldDrivers')}</span>
                       <span className="text-slate-900 font-extrabold block mt-0.5">Trader fees & performance ranges</span>
                     </div>
                   </div>
@@ -519,11 +551,11 @@ export default function App() {
                 {selectedTechSection === 'fluid' && (
                   <div className="grid grid-cols-2 gap-4 text-xs font-mono border-t border-slate-200 pt-4 bg-slate-50 p-4 rounded-xl">
                     <div>
-                      <span className="text-slate-400 block font-bold uppercase text-[9px]">Vault utilization model</span>
+                      <span className="text-slate-400 block font-bold uppercase text-[9px]">{t('tech.labels.routingModel')}</span>
                       <span className="text-slate-900 font-extrabold block mt-0.5">Intelligent routing mechanics</span>
                     </div>
                     <div>
-                      <span className="text-slate-400 block font-bold uppercase text-[9px]">Current TVL depth</span>
+                      <span className="text-slate-400 block font-bold uppercase text-[9px]">{t('tech.labels.currentDepth')}</span>
                       <span className="text-emerald-600 font-extrabold block mt-0.5">$12M+ on Base</span>
                     </div>
                   </div>
@@ -532,11 +564,11 @@ export default function App() {
                 {selectedTechSection === 'aave' && (
                   <div className="grid grid-cols-2 gap-4 text-xs font-mono border-t border-slate-200 pt-4 bg-slate-50 p-4 rounded-xl">
                     <div>
-                      <span className="text-slate-400 block font-bold uppercase text-[9px]">Integration TVL</span>
+                      <span className="text-slate-400 block font-bold uppercase text-[9px]">{t('tech.labels.integrationTvl')}</span>
                       <span className="text-slate-900 font-extrabold block mt-0.5">$30M+ on Base v3</span>
                     </div>
                     <div>
-                      <span className="text-slate-400 block font-bold uppercase text-[9px]">Risk Profile grade</span>
+                      <span className="text-slate-400 block font-bold uppercase text-[9px]">{t('tech.labels.riskGrade')}</span>
                       <span className="text-slate-700 font-extrabold block mt-0.5">Conservative Anchor Bluechip</span>
                     </div>
                   </div>
@@ -545,19 +577,19 @@ export default function App() {
                 {selectedTechSection === 'claude' && (
                   <div className="grid grid-cols-2 gap-4 text-xs font-mono border-t border-slate-200 pt-4 bg-slate-50 p-4 rounded-xl">
                     <div>
-                      <span className="text-slate-400 block font-bold uppercase text-[9px]">Core AI integration</span>
+                      <span className="text-slate-400 block font-bold uppercase text-[9px]">{t('tech.labels.coreAi')}</span>
                       <span className="text-slate-900 font-extrabold block mt-0.5 font-sans">Claude via Anthropic Base MCP</span>
                     </div>
                     <div>
-                      <span className="text-slate-400 block font-bold uppercase text-[9px]">Decision mechanism</span>
-                      <span className="text-amber-600 font-extrabold block mt-0.5">Recommendation only (No autonomous signatures)</span>
+                      <span className="text-slate-400 block font-bold uppercase text-[9px]">{t('tech.labels.decisionMechanism')}</span>
+                      <span className="text-amber-600 font-extrabold block mt-0.5">{language === 'ru' ? 'Только рекомендации (Без авто-подписи)' : 'Recommendation only (No autonomous signatures)'}</span>
                     </div>
                   </div>
                 )}
               </div>
 
               <div className="pt-6 border-t border-slate-200 text-[11px] text-slate-500 flex items-center gap-1.5 mt-8 font-semibold">
-                <LockKeyhole className="w-3.5 h-3.5 text-emerald-600" /> All logic is open source and verifiable on GitHub. You can check every compiler hash independently.
+                <LockKeyhole className="w-3.5 h-3.5 text-emerald-600 animate-pulse" /> {t('tech.bottomNote')}
               </div>
             </div>
 
@@ -567,19 +599,19 @@ export default function App() {
       </section>
 
       {/* SECTION 4 — STRATEGY AREA */}
-      <section className="py-20 border-b border-slate-200 bg-white relative" id="strategy">
+      <section className="py-20 border-b border-slate-200 bg-white relative text-left" id="strategy">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           
-          <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-6 mb-8">
+          <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-6 mb-8 font-sans">
             <div className="space-y-2 max-w-2xl">
               <span className="text-xs font-mono uppercase tracking-widest text-blue-600 font-bold block">
-                SECTION 04 — STRATEGY UNIVERSE
+                {t('strategy.tagline')}
               </span>
               <h2 className="text-3xl font-bold text-slate-900 tracking-tight">
-                One dollar. Six protocols. The best risk-adjusted yield on Base.
+                {t('strategy.title')}
               </h2>
               <p className="text-slate-600 text-sm font-medium">
-                We don't limit ourselves to one single contract. We allocate dynamically across conservative anchors and moderator pools to maximize net return within your selected safety tier limits.
+                {t('strategy.subline')}
               </p>
             </div>
 
@@ -589,13 +621,13 @@ export default function App() {
                 <button
                   key={tier}
                   onClick={() => setStrategyFilter(tier)}
-                  className={`py-1.5 px-3 rounded-lg font-bold transition-all ${
+                  className={`py-1.5 px-3 rounded-lg font-bold transition-all cursor-pointer ${
                     strategyFilter === tier 
                       ? 'bg-blue-600 text-white shadow-sm' 
                       : 'text-slate-600 hover:text-slate-900'
                   }`}
                 >
-                  {tier}
+                  {filterLabels[tier]}
                 </button>
               ))}
             </div>
@@ -607,18 +639,18 @@ export default function App() {
               <table className="w-full text-left text-xs text-slate-600 border-collapse">
                 <thead>
                   <tr className="border-b border-slate-200 text-slate-500 bg-slate-50 font-mono font-bold uppercase text-[10px]">
-                    <th className="p-4 py-3 font-semibold">DeFi Protocol</th>
-                    <th className="p-4 py-3 font-semibold">Lending Strategy / Underliers</th>
-                    <th className="p-4 py-3 font-semibold text-right">Expected APY</th>
-                    <th className="p-4 py-3 font-semibold text-right">Protocol Sizing TVL</th>
-                    <th className="p-4 py-3 font-semibold text-right">Assessed Risk Tier</th>
+                    <th className="p-4 py-3 font-semibold">{t('strategy.table.protocol')}</th>
+                    <th className="p-4 py-3 font-semibold">{t('strategy.table.underliers')}</th>
+                    <th className="p-4 py-3 font-semibold text-right">{t('strategy.table.expectedApy')}</th>
+                    <th className="p-4 py-3 font-semibold text-right">{t('strategy.table.sizingTvl')}</th>
+                    <th className="p-4 py-3 font-semibold text-right">{t('strategy.table.riskTier')}</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100">
-                  {filteredProtocols.map((p) => (
+                  {filteredProtocols.map((p: any) => (
                     <tr key={p.id} className="hover:bg-slate-50/70 transition-all font-medium">
                       <td className="p-4 font-bold text-slate-900 flex items-center gap-2">
-                        <span className="w-1.5 h-1.5 bg-blue-600 rounded-full shrink-0" />
+                        <span className="w-1.5 h-1.5 bg-blue-600 rounded-full shrink-0 animate-pulse" />
                         {p.name}
                       </td>
                       <td className="p-4 text-slate-600">{p.strategy}</td>
@@ -638,26 +670,26 @@ export default function App() {
             </div>
             
             <div className="p-4 bg-slate-50 border-t border-slate-200 text-xs text-slate-400 text-center font-mono font-semibold">
-              *APY figures are live variables pulled from smart logs. Past performance stays separate from future outcomes.
+              {t('strategy.table.liveNote')}
             </div>
           </div>
 
           {/* Principle matrices */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 text-left">
             
             {/* What we never do */}
             <div className="bg-white border border-slate-200 rounded-2xl p-6 md:p-8 space-y-6 shadow-tiny">
               <div className="space-y-1">
                 <span className="text-xs font-mono uppercase tracking-wider text-rose-600 font-bold block flex items-center gap-1">
-                  <ShieldAlert className="w-4 h-4" /> Safety Safeguards
+                  <ShieldAlert className="w-4 h-4" /> {t('strategy.principlesTitle')}
                 </span>
                 <h3 className="text-xl font-bold text-slate-900 tracking-tight">
-                  What we never do
+                  {t('strategy.principlesSubtitle')}
                 </h3>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {NOT_DO_PRINCIPLES.map((prin, i) => (
+                {notDoPrinciples.map((prin: any, i: number) => (
                   <div key={i} className="space-y-1 border-l-2 border-rose-500/35 pl-3">
                     <h4 className="text-xs font-bold text-slate-900">{prin.title}</h4>
                     <p className="text-[11px] text-slate-500 font-medium leading-relaxed">{prin.desc}</p>
@@ -670,13 +702,13 @@ export default function App() {
             <div className="bg-white border border-slate-200 rounded-2xl p-6 md:p-8 space-y-6 justify-between flex flex-col shadow-tiny">
               <div className="space-y-2">
                 <span className="text-xs font-mono uppercase tracking-wider text-emerald-600 font-bold block flex items-center gap-1">
-                  <TrendingUp className="w-4 h-4" /> Yield Metrics
+                  <TrendingUp className="w-4 h-4" /> {t('strategy.metricsTitle')}
                 </span>
                 <h3 className="text-xl font-bold text-slate-900 tracking-tight">
-                  Portfolio Return Matrices
+                  {t('strategy.metricsSubtitle')}
                 </h3>
-                <p className="text-xs text-slate-500 font-medium leading-relaxed">
-                  How much does a starting allocation of <strong className="text-slate-900 font-extrabold">$1,000 USDC</strong> earn across different system configurations?
+                <p className="text-xs text-slate-500 font-medium leading-relaxed font-sans">
+                  {t('strategy.metricsDesc')}
                 </p>
               </div>
 
@@ -685,36 +717,36 @@ export default function App() {
                 {/* Tier 1 */}
                 <div className="flex justify-between items-center p-3 rounded-lg border border-slate-200 bg-slate-50">
                   <div>
-                    <span className="text-slate-900 font-bold block">Conservative Target</span>
-                    <span className="text-[10px] text-slate-400 font-medium block">Gauntlet Curated vaults</span>
+                    <span className="text-slate-900 font-bold block">{t('strategy.returns.conservative')}</span>
+                    <span className="text-[10px] text-slate-400 font-medium block font-sans">{t('strategy.returns.conservativeSub')}</span>
                   </div>
                   <div className="text-right">
-                    <span className="text-emerald-600 font-extrabold block">~$3.50/mo</span>
-                    <span className="text-[10px] text-slate-400 font-medium block">~$43.00 annual</span>
+                    <span className="text-emerald-600 font-extrabold block">~$3.50{t('strategy.returns.perMonth')}</span>
+                    <span className="text-[10px] text-slate-400 font-medium block">~$43.00{t('strategy.returns.perYear')}</span>
                   </div>
                 </div>
 
                 {/* Tier 2 */}
                 <div className="flex justify-between items-center p-3 rounded-lg border border-blue-200 bg-blue-50/50">
                   <div>
-                    <span className="text-slate-900 font-extrabold block">Balanced Model</span>
-                    <span className="text-[10px] text-blue-600 font-bold block">Morpho + Moonwell composite</span>
+                    <span className="text-slate-900 font-extrabold block">{t('strategy.returns.balanced')}</span>
+                    <span className="text-[10px] text-blue-600 block font-sans font-bold">{t('strategy.returns.balancedSub')}</span>
                   </div>
                   <div className="text-right">
-                    <span className="text-emerald-650 font-extrabold text-emerald-600 block">~$6.00 - $8.00/mo</span>
-                    <span className="text-[10px] text-slate-500 block">~$72.00 - $96.00 annual</span>
+                    <span className="text-emerald-650 font-extrabold text-emerald-600 block">~$6.00 - $8.00{t('strategy.returns.perMonth')}</span>
+                    <span className="text-[10px] text-slate-500 block">~$72.00 - $96.00{t('strategy.returns.perYear')}</span>
                   </div>
                 </div>
 
                 {/* Tier 3 */}
                 <div className="flex justify-between items-center p-3 rounded-lg border border-slate-200 bg-slate-50">
                   <div>
-                    <span className="text-slate-900 font-bold block">Growth Optimization</span>
-                    <span className="text-[10px] text-slate-400 font-medium block">Blended LP pairs & Avantis</span>
+                    <span className="text-slate-900 font-bold block">{t('strategy.returns.growth')}</span>
+                    <span className="text-[10px] text-slate-400 font-medium block font-sans">{t('strategy.returns.growthSub')}</span>
                   </div>
                   <div className="text-right">
-                    <span className="text-emerald-600 font-extrabold block">~$9.00 - $13.00/mo</span>
-                    <span className="text-[10px] text-slate-400 font-medium block">~$108.00 - $156.00 annual</span>
+                    <span className="text-emerald-600 font-extrabold block">~$9.00 - $13.00{t('strategy.returns.perMonth')}</span>
+                    <span className="text-[10px] text-slate-400 font-medium block">~$108.00 - $156.00{t('strategy.returns.perYear')}</span>
                   </div>
                 </div>
 
@@ -727,53 +759,53 @@ export default function App() {
       </section>
 
       {/* SECTION 5 — WHO THIS IS FOR */}
-      <section className="py-20 border-b border-slate-200 bg-slate-50 relative" id="who-this-is-for">
+      <section className="py-20 border-b border-slate-200 bg-slate-50 relative text-left" id="who-this-is-for">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           
           <div className="text-center max-w-3xl mx-auto space-y-3 mb-12">
             <span className="text-xs font-mono uppercase tracking-widest text-blue-600 font-bold block">
-              SECTION 05 — SOVEREIGN SAVINGS
+              {t('whoThisIsFor.tagline')}
             </span>
             <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 tracking-tight">
-              Built for people who've decided their money belongs to them — not their bank.
+              {t('whoThisIsFor.title')}
             </h2>
             <p className="text-slate-600 text-sm font-medium">
-              You don't need to distrust the traditional financial system to be here. But if you do — you're in the right place. We share a simple conviction: the safest place for your savings is where no intermediary can reach them.
+              {t('whoThisIsFor.subline')}
             </p>
           </div>
 
           {/* Core Conviction Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16 font-medium">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16 font-medium text-left">
             <div className="p-5 bg-white border border-slate-200 rounded-xl space-y-2 shadow-tiny">
-              <span className="text-xs font-bold text-slate-900 block">Unpredictable Local Systems</span>
+              <span className="text-xs font-bold text-slate-900 block">{t('whoThisIsFor.convictions.c1Title')}</span>
               <p className="text-xs text-slate-500 leading-relaxed font-semibold">
-                Watched banks freeze accounts, currencies devalue overnight, and capital restrictions appear? We offer an alternative path.
+                {t('whoThisIsFor.convictions.c1Desc')}
               </p>
             </div>
             <div className="p-5 bg-white border border-slate-200 rounded-xl space-y-2 shadow-tiny">
-              <span className="text-xs font-bold text-slate-900 block">Financial Sovereignty</span>
+              <span className="text-xs font-bold text-slate-900 block">{t('whoThisIsFor.convictions.c2Title')}</span>
               <p className="text-xs text-slate-500 leading-relaxed font-semibold">
-                Your dollars should compile for you, not sit inside institutions that block, inflate, or compromise them at whim.
+                {t('whoThisIsFor.convictions.c2Desc')}
               </p>
             </div>
             <div className="p-5 bg-white border border-slate-200 rounded-xl space-y-2 shadow-tiny">
-              <span className="text-xs font-bold text-slate-900 block font-sans">Borderless DeFi Yield</span>
+              <span className="text-xs font-bold text-slate-900 block font-sans">{t('whoThisIsFor.convictions.c3Title')}</span>
               <p className="text-xs text-slate-500 leading-relaxed font-semibold">
-                Real yields generated directly by market liquidity demands, settled by decentralized rules instead of SWIFT bans.
+                {t('whoThisIsFor.convictions.c3Desc')}
               </p>
             </div>
             <div className="p-5 bg-white border border-slate-200 rounded-xl space-y-2 shadow-tiny">
-              <span className="text-xs font-bold text-slate-900 block">Zero Added Complexity</span>
+              <span className="text-xs font-bold text-slate-900 block">{t('whoThisIsFor.convictions.c4Title')}</span>
               <p className="text-xs text-slate-500 leading-relaxed font-semibold">
-                You do not need to become an active DeFi wizard. We run the infrastructure, while you keep 100% custody keys.
+                {t('whoThisIsFor.convictions.c4Desc')}
               </p>
             </div>
           </div>
 
           {/* TradFi vs Base Comparison Table */}
-          <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden p-6 md:p-8 mb-16 shadow-tiny">
+          <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden p-6 md:p-8 mb-16 shadow-tiny text-left">
             <h3 className="text-lg font-bold text-slate-900 mb-6 tracking-tight flex items-center gap-2">
-              <Globe2 className="text-blue-600 w-5 h-5" /> Comparison: Traditional Finance vs This Service
+              <Globe2 className="text-blue-600 w-5 h-5 animate-pulse" /> {t('whoThisIsFor.table.title')}
             </h3>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -781,32 +813,32 @@ export default function App() {
               {/* TradFi Column */}
               <div className="space-y-4">
                 <span className="text-xs font-mono font-bold uppercase tracking-wider text-rose-600 block border-b border-rose-200 pb-2">
-                  TRADITIONAL FINANCE
+                  {t('whoThisIsFor.table.tradTitle')}
                 </span>
                 <div className="space-y-3 font-semibold text-xs text-slate-500">
                   <div className="flex justify-between items-start pb-2 border-b border-slate-100">
-                    <span>Deposit Custody:</span>
-                    <span className="text-right text-slate-800">Bank holds and lends your money</span>
+                    <span>{t('whoThisIsFor.table.custody')}</span>
+                    <span className="text-right text-slate-800 font-sans">{t('whoThisIsFor.table.custodyTrad')}</span>
                   </div>
                   <div className="flex justify-between items-start pb-2 border-b border-slate-100 font-bold">
-                    <span>Account Freezes:</span>
-                    <span className="text-right text-rose-605 text-rose-605 text-rose-600">Can freeze or block at will</span>
+                    <span>{t('whoThisIsFor.table.freezes')}</span>
+                    <span className="text-right text-rose-600 font-sans">{t('whoThisIsFor.table.freezesTrad')}</span>
                   </div>
-                  <div className="flex justify-between items-start pb-2 border-b border-slate-100">
-                    <span>Asset Seizure:</span>
-                    <span className="text-right text-slate-800">Subject to localized capital controls</span>
+                  <div className="flex justify-between items-start pb-2 border-b border-slate-100 font-semibold">
+                    <span>{t('whoThisIsFor.table.seizure')}</span>
+                    <span className="text-right text-slate-800 font-sans">{t('whoThisIsFor.table.seizureTrad')}</span>
                   </div>
                   <div className="flex justify-between items-start pb-2 border-b border-slate-100 font-medium">
-                    <span>Currency Exposure:</span>
-                    <span className="text-right text-slate-800">Single localized country inflation risks</span>
+                    <span>{t('whoThisIsFor.table.inflation')}</span>
+                    <span className="text-right text-slate-800 font-sans">{t('whoThisIsFor.table.inflationTrad')}</span>
                   </div>
                   <div className="flex justify-between items-start pb-2 border-b border-slate-100 font-extrabold text-slate-900">
-                    <span>Interest Return:</span>
-                    <span className="text-right">0.5% Average savings rate</span>
+                    <span>{t('whoThisIsFor.table.return')}</span>
+                    <span className="text-right">{t('whoThisIsFor.table.returnTrad')}</span>
                   </div>
-                  <div className="flex justify-between items-start">
-                    <span>Identity:</span>
-                    <span className="text-right text-slate-800">Local ID, tax records, physical validation</span>
+                  <div className="flex justify-between items-start font-sans">
+                    <span>{t('whoThisIsFor.table.identity')}</span>
+                    <span className="text-right text-slate-800">{t('whoThisIsFor.table.identityTrad')}</span>
                   </div>
                 </div>
               </div>
@@ -814,32 +846,32 @@ export default function App() {
               {/* DeFi Column */}
               <div className="space-y-4">
                 <span className="text-xs font-mono font-bold uppercase tracking-wider text-blue-600 block border-b border-blue-200 pb-2">
-                  BASE YIELD FUND SERVICE
+                  {t('whoThisIsFor.table.fundTitle')}
                 </span>
                 <div className="space-y-3 text-xs text-slate-500 font-semibold">
-                  <div className="flex justify-between items-start pb-2 border-b border-slate-100">
-                    <span className="font-bold text-slate-900">Deposit Custody:</span>
-                    <span className="text-right text-slate-950 font-extrabold">You hold 100% custody</span>
+                  <div className="flex justify-between items-start pb-2 border-b border-slate-100 font-sans">
+                    <span className="font-bold text-slate-900">{t('whoThisIsFor.table.custody')}</span>
+                    <span className="text-right text-slate-950 font-extrabold">{t('whoThisIsFor.table.custodyFund')}</span>
                   </div>
-                  <div className="flex justify-between items-start pb-2 border-b border-slate-100">
-                    <span className="font-bold text-slate-900">Account Freezes:</span>
-                    <span className="text-right text-emerald-600 font-extrabold">Censorship-resistant standard</span>
+                  <div className="flex justify-between items-start pb-2 border-b border-slate-100 font-sans">
+                    <span className="font-bold text-slate-900">{t('whoThisIsFor.table.freezes')}</span>
+                    <span className="text-right text-emerald-600 font-extrabold">{t('whoThisIsFor.table.freezesFund')}</span>
                   </div>
-                  <div className="flex justify-between items-start pb-2 border-b border-slate-100">
-                    <span className="font-bold text-slate-900">Asset Seizure:</span>
-                    <span className="text-right text-slate-950 font-extrabold">Public blockchain cryptography</span>
+                  <div className="flex justify-between items-start pb-2 border-b border-slate-100 font-sans">
+                    <span className="font-bold text-slate-900">{t('whoThisIsFor.table.seizure')}</span>
+                    <span className="text-right text-slate-950 font-extrabold">{t('whoThisIsFor.table.seizureFund')}</span>
                   </div>
-                  <div className="flex justify-between items-start pb-2 border-b border-slate-100 font-semibold">
-                    <span className="font-bold text-slate-900">Currency Exposure:</span>
-                    <span className="text-right text-slate-950 font-extrabold">USDC - Dollar-pegged, global utility</span>
+                  <div className="flex justify-between items-start pb-2 border-b border-slate-100 font-sans">
+                    <span className="font-bold text-slate-900">{t('whoThisIsFor.table.inflation')}</span>
+                    <span className="text-right text-slate-950 font-extrabold">{t('whoThisIsFor.table.inflationFund')}</span>
                   </div>
-                  <div className="flex justify-between items-start pb-2 border-b border-slate-100 font-extrabold text-emerald-650 text-emerald-600">
-                    <span className="font-bold text-slate-905">Interest Return:</span>
-                    <span className="text-right">4.0% - 40.0% APY ranges</span>
+                  <div className="flex justify-between items-start pb-2 border-b border-slate-100 font-sans">
+                    <span className="font-bold text-slate-900">{t('whoThisIsFor.table.return')}</span>
+                    <span className="text-right text-emerald-600 font-extrabold">{t('whoThisIsFor.table.returnFund')}</span>
                   </div>
-                  <div className="flex justify-between items-start">
-                    <span className="font-bold text-slate-900">Identity:</span>
-                    <span className="text-right text-slate-950 font-extrabold">Requires physical internet connection only</span>
+                  <div className="flex justify-between items-start font-sans">
+                    <span className="font-bold text-slate-900">{t('whoThisIsFor.table.identity')}</span>
+                    <span className="text-right text-slate-950 font-extrabold">{t('whoThisIsFor.table.identityFund')}</span>
                   </div>
                 </div>
               </div>
@@ -848,38 +880,38 @@ export default function App() {
 
             {/* Note on USDC */}
             <div className="mt-8 pt-6 border-t border-slate-200 text-[11px] text-slate-400 leading-relaxed max-w-3xl font-mono font-bold">
-              <strong>A note on USDC stablecoins:</strong> Funds are stored in USDC, fully collateralized with asset pools maintained by Circle (a regulated US firm). Moves freely without processing halts, 24 hours a day, directly on-chain.
+              {t('whoThisIsFor.table.usdcNote')}
             </div>
           </div>
 
           {/* Pre-trade checklist & tiered policies */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-left">
             
             <div className="bg-white border border-slate-200 rounded-2xl p-6 md:p-8 space-y-6 shadow-tiny">
               <span className="text-xs font-mono uppercase tracking-widest text-blue-600 font-bold block">
-                AUDITING PROTOCOLS
+                {t('whoThisIsFor.compliance.tagline')}
               </span>
               <h3 className="text-xl font-bold text-slate-900 tracking-tight">
-                Pre-trade compliance check
+                {t('whoThisIsFor.compliance.title')}
               </h3>
-              <p className="text-xs text-slate-600 font-medium leading-relaxed">
-                Before presenting any allocation rebalance recommendation, or signing transactions, our system validates every metrics node.
+              <p className="text-xs text-slate-600 font-medium leading-relaxed font-sans">
+                {t('whoThisIsFor.compliance.subline')}
               </p>
 
               {/* Interactive Checklist list */}
               <div className="space-y-3 font-mono text-xs font-bold">
-                {PRE_TRADE_CHECKS.map((checkText, idx) => {
+                {preTradeChecks.map((checkText: string, idx: number) => {
                   const isChecked = !!checkedItems[idx];
                   return (
                     <button
                       key={idx}
                       onClick={() => toggleCheckItem(idx)}
-                      className="w-full text-left flex items-start gap-3 p-3 rounded-lg border border-slate-200 hover:border-slate-350 transition-all bg-slate-50"
+                      className="w-full text-left flex items-start gap-3 p-3 rounded-lg border border-slate-200 hover:border-slate-350 transition-all bg-slate-50 cursor-pointer"
                     >
                       <div className={`w-4 h-4 rounded border mt-0.5 flex items-center justify-center shrink-0 ${isChecked ? 'bg-blue-600 border-blue-600 text-white' : 'border-slate-300'}`}>
                         {isChecked && <Check className="w-2.5 h-2.5 text-white" />}
                       </div>
-                      <span className={`text-[11px] leading-relaxed ${isChecked ? 'text-slate-800' : 'text-slate-400 line-through font-medium'}`}>
+                      <span className={`text-[11px] leading-relaxed ${isChecked ? 'text-slate-800' : 'text-slate-400 line-through font-medium font-mono'}`}>
                         {checkText}
                       </span>
                     </button>
@@ -891,7 +923,7 @@ export default function App() {
               <div className="flex items-center gap-2 bg-emerald-50 text-emerald-700 text-[10px] font-mono p-3 rounded-xl border border-emerald-100 font-bold">
                 <FileCheck className="w-4 h-4 shrink-0 text-emerald-600" />
                 <span>
-                  SAFETY SIGNAL STATUS: <strong>SYSTEM SECURE ({Object.values(checkedItems).filter(Boolean).length}/6 CHECKS ACTIVE)</strong>
+                  {t('whoThisIsFor.compliance.badge')} <strong>{language === 'ru' ? 'СИСТЕМА ЗАЩИЩЕНА' : 'SYSTEM SECURE'} ({Object.values(checkedItems).filter(Boolean).length}/6 {language === 'ru' ? 'ПРОВЕРОК АКТИВНО' : 'CHECKS ACTIVE'})</strong>
                 </span>
               </div>
             </div>
@@ -900,30 +932,30 @@ export default function App() {
             <div className="bg-white border border-slate-200 rounded-2xl p-6 md:p-8 space-y-6 flex flex-col justify-between shadow-tiny">
               <div className="space-y-4">
                 <span className="text-xs font-mono uppercase tracking-widest text-blue-600 font-bold block">
-                  SYSTEM SAFEGUARDS
+                  {t('whoThisIsFor.safeguards.tagline')}
                 </span>
                 <h3 className="text-xl font-bold text-slate-900 tracking-tight">
-                  Tapping into institutional rigor
+                  {t('whoThisIsFor.safeguards.title')}
                 </h3>
                 
                 <div className="space-y-4 text-xs text-slate-600 font-medium whitespace-normal">
                   <div className="space-y-1">
-                    <h4 className="text-slate-900 font-bold">Tiered risk bounds</h4>
-                    <p className="leading-relaxed">Conservative strategies stay active as your root defaults. Dynamic high-yield vaults require explicit approved credentials.</p>
+                    <h4 className="text-slate-900 font-bold font-sans">{t('whoThisIsFor.safeguards.riskBoundsTitle')}</h4>
+                    <p className="leading-relaxed font-sans">{t('whoThisIsFor.safeguards.riskBoundsDesc')}</p>
                   </div>
                   <div className="space-y-1">
-                    <h4 className="text-slate-900 font-bold">Gas Buffer requirement</h4>
-                    <p className="leading-relaxed">We strictly maintain small reserve gas quantities of Ethereum (ETH) in your wallet to confirm withdrawals whenever conditions turn hostile.</p>
+                    <h4 className="text-slate-900 font-bold font-sans">{t('whoThisIsFor.safeguards.gasBufferTitle')}</h4>
+                    <p className="leading-relaxed font-sans">{t('whoThisIsFor.safeguards.gasBufferDesc')}</p>
                   </div>
                   <div className="space-y-1">
-                    <h4 className="text-slate-900 font-bold font-mono text-blue-600">No autonomous transactions</h4>
-                    <p className="text-amber-600 font-mono font-bold leading-relaxed">The AI scans indexes & builds calldata. Only your physical click commits operations to the blockchain.</p>
+                    <h4 className="text-slate-900 font-bold font-mono text-blue-600">{t('whoThisIsFor.safeguards.noAutoTitle')}</h4>
+                    <p className="text-amber-600 font-mono font-bold leading-relaxed">{t('whoThisIsFor.safeguards.noAutoDesc')}</p>
                   </div>
                 </div>
               </div>
 
               <div className="p-3 bg-slate-50 border border-slate-200 rounded-lg text-[11px] text-slate-500 font-mono font-semibold">
-                *We never ask where you are from. We never audit why you want control of your money. That is your core priority. We ensure standard capital efficacy.
+                {t('whoThisIsFor.safeguards.bottomNote')}
               </div>
             </div>
 
@@ -933,7 +965,7 @@ export default function App() {
       </section>
 
       {/* SECTION 6 — TRANSPARENCY */}
-      <section className="py-20 border-b border-slate-200 bg-white relative" id="transparency">
+      <section className="py-20 border-b border-slate-200 bg-white relative text-left" id="transparency">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           
           <div className="flex flex-col lg:flex-row gap-12 items-center">
@@ -941,28 +973,28 @@ export default function App() {
             {/* Left panels */}
             <div className="flex-1 space-y-6">
               <span className="text-xs font-mono uppercase tracking-widest text-blue-600 font-bold block animate-pulse">
-                SECTION 06 — TRANSPARENCY
+                {t('transparency.tagline')}
               </span>
               <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 tracking-tight">
-                Every number is verifiable. On-chain. By anyone.
+                {t('transparency.title')}
               </h2>
               <p className="text-slate-600 text-sm sm:text-base leading-relaxed font-semibold">
-                Unlike opaque traditional offshore funds, there is zero room to guess or hide here. Every ledger update can be cross-audited on-chain via public network browsers.
+                {t('transparency.subline')}
               </p>
 
               <div className="space-y-3">
                 <div className="flex gap-3 items-start p-3 bg-slate-50 border border-slate-200 rounded-xl shadow-tiny">
                   <span className="text-xs font-bold shrink-0 bg-blue-50 text-blue-600 p-1.5 rounded font-mono">01</span>
                   <div>
-                    <h4 className="text-xs font-bold text-slate-900">BaseScan browser integration</h4>
-                    <p className="text-[11px] text-slate-500 font-medium leading-relaxed mt-0.5">Every compounding event, allocation movement, and rebalance can be checked by searching your account address on basescan.org.</p>
+                    <h4 className="text-xs font-bold text-slate-900 font-sans">{t('transparency.c1Title')}</h4>
+                    <p className="text-[11px] text-slate-500 font-medium leading-relaxed mt-0.5 font-sans">{t('transparency.c1Desc')}</p>
                   </div>
                 </div>
                 <div className="flex gap-3 items-start p-3 bg-slate-50 border border-slate-200 rounded-xl shadow-tiny">
                   <span className="text-xs font-bold shrink-0 bg-blue-50 text-blue-600 p-1.5 rounded font-mono">02</span>
                   <div>
-                    <h4 className="text-xs font-bold text-slate-900">Direct Protocol verification links</h4>
-                    <p className="text-[11px] text-slate-500 font-medium leading-relaxed mt-0.5">Your exact positions can be audited anytime by connecting your ledger keys to morpho.org or moonwell.fi dashboards.</p>
+                    <h4 className="text-xs font-bold text-slate-900 font-sans">{t('transparency.c2Title')}</h4>
+                    <p className="text-[11px] text-slate-500 font-medium leading-relaxed mt-0.5 font-sans">{t('transparency.c2Desc')}</p>
                   </div>
                 </div>
               </div>
@@ -971,7 +1003,7 @@ export default function App() {
             {/* Right Interactive list of verification targets */}
             <div className="w-full lg:w-[450px] shrink-0 bg-slate-50 border border-slate-200 p-5 rounded-2xl space-y-4 shadow-tiny">
               <span className="text-[10px] bg-blue-50 border border-blue-200 text-blue-600 font-mono font-bold px-2 py-0.5 rounded-full inline-block">
-                LIVE SOURCE REFERENCE LINKS
+                {t('transparency.badge')}
               </span>
 
               <div className="space-y-2.5">
@@ -981,8 +1013,8 @@ export default function App() {
                   rel="noreferrer"
                   className="block p-3 border border-slate-200 hover:border-slate-350 rounded-xl bg-white hover:bg-slate-50/50 transition-all group shadow-tiny"
                 >
-                  <div className="flex justify-between items-center">
-                    <span className="text-xs font-bold text-slate-900 group-hover:text-blue-600 transition-all">Morpho Protocol Tracker</span>
+                  <div className="flex justify-between items-center font-sans">
+                    <span className="text-xs font-bold text-slate-900 group-hover:text-blue-600 transition-all">{t('transparency.links.morpho')}</span>
                     <ExternalLink className="w-3.5 h-3.5 text-slate-400 group-hover:text-blue-600 transition-all" />
                   </div>
                   <span className="text-[10px] text-slate-400 font-mono mt-0.5 block truncate">app.morpho.org/base/</span>
@@ -994,8 +1026,8 @@ export default function App() {
                   rel="noreferrer"
                   className="block p-3 border border-slate-200 hover:border-slate-350 rounded-xl bg-white hover:bg-slate-50/50 transition-all group shadow-tiny"
                 >
-                  <div className="flex justify-between items-center">
-                    <span className="text-xs font-bold text-slate-900 group-hover:text-blue-600 transition-all">Moonwell Dashboard Hub</span>
+                  <div className="flex justify-between items-center font-sans">
+                    <span className="text-xs font-bold text-slate-900 group-hover:text-blue-600 transition-all">{t('transparency.links.moonwell')}</span>
                     <ExternalLink className="w-3.5 h-3.5 text-slate-400 group-hover:text-blue-600 transition-all" />
                   </div>
                   <span className="text-[10px] text-slate-400 font-mono mt-0.5 block truncate">app.moonwell.fi/base/</span>
@@ -1007,8 +1039,8 @@ export default function App() {
                   rel="noreferrer"
                   className="block p-3 border border-slate-200 hover:border-slate-350 rounded-xl bg-white hover:bg-slate-50/50 transition-all group shadow-tiny"
                 >
-                  <div className="flex justify-between items-center">
-                    <span className="text-xs font-bold text-slate-900 group-hover:text-blue-600 transition-all">BaseScan L2 Explorer</span>
+                  <div className="flex justify-between items-center font-sans">
+                    <span className="text-xs font-bold text-slate-900 group-hover:text-blue-600 transition-all">{t('transparency.links.basescan')}</span>
                     <ExternalLink className="w-3.5 h-3.5 text-slate-400 group-hover:text-blue-600 transition-all" />
                   </div>
                   <span className="text-[10px] text-slate-400 font-mono mt-0.5 block truncate">basescan.org/address/...</span>
@@ -1022,7 +1054,7 @@ export default function App() {
       </section>
 
       {/* SECTION 7 — DECISION MAKING PROCESS */}
-      <section className="py-20 border-b border-slate-200 bg-slate-50 relative" id="decisions">
+      <section className="py-20 border-b border-slate-200 bg-slate-50 relative text-left" id="decisions">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           
           <div className="flex flex-col lg:flex-row gap-12 items-start">
@@ -1030,53 +1062,53 @@ export default function App() {
             {/* Left Description info */}
             <div className="flex-1 space-y-6">
               <span className="text-xs font-mono uppercase tracking-widest text-blue-600 font-bold block">
-                SECTION 07 — STRATEGY SELECTIONS
+                {t('decisions.tagline')}
               </span>
               <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 tracking-tight">
-                Strategy decided by data. Executed by AI. Approved by you.
+                {t('decisions.title')}
               </h2>
               <div className="space-y-4 text-xs font-mono leading-relaxed text-slate-600 font-semibold">
                 <div className="border-l-2 border-blue-200 pl-4 space-y-1">
-                  <h4 className="text-slate-900 font-extrabold">Daily Sweeps</h4>
-                  <p>Our smart scheduler pulls APYs across all protocols, flagging positions where yield drops or utilization spikes.</p>
+                  <h4 className="text-slate-900 font-extrabold font-sans">{t('decisions.sweepsTitle')}</h4>
+                  <p>{t('decisions.sweepsDesc')}</p>
                 </div>
                 <div className="border-l-2 border-blue-200 pl-4 space-y-1">
-                  <h4 className="text-slate-900 font-extrabold font-sans">Scoring Weights</h4>
-                  <p>Candidate pools are graded on expected net APY, TVL buffers, collateral assets quality, target liquidity depth, and gas expenses.</p>
+                  <h4 className="text-slate-900 font-extrabold font-sans">{t('decisions.weightsTitle')}</h4>
+                  <p>{t('decisions.weightsDesc')}</p>
                 </div>
                 <div className="border-l-2 border-blue-200 pl-4 space-y-1">
-                  <h4 className="text-slate-900 font-extrabold">Migration Threshold Bounds</h4>
-                  <p>Rebalances are strictly locked unless expected extra returns coverage transaction gas bounds in under 3 months.</p>
+                  <h4 className="text-slate-900 font-extrabold font-sans">{t('decisions.boundsTitle')}</h4>
+                  <p>{t('decisions.boundsDesc')}</p>
                 </div>
               </div>
             </div>
 
             {/* Right Mock AI Scan preview Card */}
-            <div className="w-full lg:w-[460px] shrink-0 bg-white border border-slate-200 p-6 rounded-2xl space-y-4 shadow-tiny">
-              <span className="text-[10px] font-mono text-slate-450 font-bold block text-slate-400">AI THRESHOLD PARSER EXAMPLE</span>
+            <div className="w-full lg:w-[460px] shrink-0 bg-white border border-slate-200 p-6 rounded-2xl space-y-4 shadow-tiny text-left">
+              <span className="text-[10px] font-mono text-slate-400 font-bold block">{t('decisions.card.title')}</span>
               
               <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-3 font-mono text-xs">
                 <div className="flex justify-between text-slate-500 pb-2 border-b border-slate-200 font-bold">
-                  <span>Rebalance Candidate:</span>
+                  <span>{t('decisions.card.candidate')}</span>
                   <span className="text-slate-900 font-black">Morpho → Moonwell USDC</span>
                 </div>
                 <div className="flex justify-between text-slate-500 font-bold">
-                  <span>Expected APY Gain:</span>
-                  <span className="text-emerald-600 font-black">+4.82% Annual</span>
+                  <span>{t('decisions.card.gain')}</span>
+                  <span className="text-emerald-600 font-black">+4.82% {language === 'ru' ? 'Годовых' : 'Annual'}</span>
                 </div>
                 <div className="flex justify-between text-slate-500 font-bold">
-                  <span>Estimated Total Gas:</span>
+                  <span>{t('decisions.card.gas')}</span>
                   <span className="text-slate-950 font-black">0.0001 ETH ($0.003 USDC)</span>
                 </div>
                 <div className="flex justify-between text-slate-500 border-t border-slate-200 pt-2 font-black">
-                  <span>Threshold Status:</span>
-                  <span className="text-emerald-600 font-black uppercase animate-pulse">THRESHOLD PASSED</span>
+                  <span>{t('decisions.card.status')}</span>
+                  <span className="text-emerald-600 font-black uppercase animate-pulse">{t('decisions.card.passed')}</span>
                 </div>
               </div>
 
               <div className="flex items-center gap-2 text-xs text-slate-500 font-semibold">
                 <Info className="w-4 h-4 text-blue-600 text-center font-bold" />
-                <span>Recommendation prepares automatically and updates on-chain.</span>
+                <span className="font-sans">{t('decisions.card.hint')}</span>
               </div>
             </div>
 
@@ -1086,7 +1118,7 @@ export default function App() {
       </section>
 
       {/* SECTION 8 — FOR YOUR ACCOUNT DETAILS */}
-      <section className="py-20 border-b border-slate-200 relative bg-white" id="account-details">
+      <section className="py-20 border-b border-slate-200 relative bg-white text-left" id="account-details">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           
           <div className="flex flex-col lg:flex-row gap-12 items-center">
@@ -1094,65 +1126,65 @@ export default function App() {
             {/* Left checklist details */}
             <div className="flex-1 space-y-6">
               <span className="text-xs font-mono uppercase tracking-widest text-blue-600 font-bold block">
-                SECTION 08 — ACCOUNT OWNERSHIP
+                {t('ownership.tagline')}
               </span>
               <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 tracking-tight">
-                You keep your account. We manage the strategy.
+                {t('ownership.title')}
               </h2>
-              <p className="text-slate-600 text-sm leading-relaxed font-semibold">
-                This isn't a pooled or opaque collective investment. You do not send us money. Your stablecoins stay situated inside your Base Account (secured by Coinbase abstraction infrastructure) accessible to withdraw anytime.
+              <p className="text-slate-600 text-sm leading-relaxed font-semibold font-sans">
+                {t('ownership.subline')}
               </p>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs font-mono text-slate-700 font-bold">
                 <div className="bg-slate-50 p-4 rounded-xl space-y-2 border border-slate-200 shadow-tiny">
-                  <span className="text-emerald-700 font-bold block flex items-center gap-1.5">
-                    <CheckCircle className="w-4 h-4 text-emerald-600 font-bold animate-pulse" /> WHAT YOU CONTROL
+                  <span className="text-emerald-700 font-bold block flex items-center gap-1.5 font-sans">
+                    <CheckCircle className="w-4 h-4 text-emerald-600 font-bold animate-pulse" /> {t('ownership.control')}
                   </span>
                   <ul className="space-y-1.5 text-slate-500 text-[11px] font-medium font-sans">
-                    <li>● 100% custody of keys</li>
-                    <li>● Instant penalty-free withdrawals</li>
-                    <li>● Approve or reject allocations</li>
+                    {(t('ownership.controlItems') as string[]).map((item, idx) => (
+                      <li key={idx}>● {item}</li>
+                    ))}
                   </ul>
                 </div>
 
                 <div className="bg-slate-50 p-4 rounded-xl space-y-2 border border-slate-200 shadow-tiny">
-                  <span className="text-blue-600 font-bold block flex items-center gap-1.5">
-                    <Activity className="w-4 h-4 text-blue-600 font-bold animate-pulse" /> WHAT WE MANAGE
+                  <span className="text-blue-600 font-bold block flex items-center gap-1.5 font-sans">
+                    <Activity className="w-4 h-4 text-blue-600 font-bold animate-pulse" /> {t('ownership.manage')}
                   </span>
                   <ul className="space-y-1.5 text-slate-500 text-[11px] font-medium font-sans">
-                    <li>● Daily opportunity checks</li>
-                    <li>● Continuous risk mitigation sheets</li>
-                    <li>● Precise tax calculations logs</li>
+                    {(t('ownership.manageItems') as string[]).map((item, idx) => (
+                      <li key={idx}>● {item}</li>
+                    ))}
                   </ul>
                 </div>
               </div>
             </div>
 
             {/* Right Stats summaries */}
-            <div className="w-full lg:w-[420px] shrink-0 bg-slate-50 border border-slate-200 p-6 rounded-2xl space-y-5 shadow-tiny">
-              <span className="text-[10px] font-mono text-slate-400 font-bold block uppercase pb-1 border-b border-slate-200">Minimum Requirements</span>
+            <div className="w-full lg:w-[420px] shrink-0 bg-slate-50 border border-slate-200 p-6 rounded-2xl space-y-5 shadow-tiny text-left">
+              <span className="text-[10px] font-mono text-slate-400 font-bold block uppercase pb-1 border-b border-slate-200">{t('ownership.card.title')}</span>
               
               <div className="space-y-3 font-mono text-xs font-extrabold text-slate-500">
                 <div className="flex justify-between items-center pb-2 border-b border-slate-200">
-                  <span>Minimum to Start:</span>
+                  <span>{t('ownership.card.minStart')}</span>
                   <span className="text-slate-900 font-black">$100 USDC</span>
                 </div>
                 <div className="flex justify-between items-center pb-2 border-b border-slate-200">
-                  <span>Recommended Balance:</span>
+                  <span>{t('ownership.card.recBal')}</span>
                   <span className="text-slate-900 font-black">$500 – $2,000 USDC</span>
                 </div>
                 <div className="flex justify-between items-center pb-1">
-                  <span>Dynamic Exit limits:</span>
-                  <span className="text-emerald-605 text-emerald-600 font-black">Unlimited Instant</span>
+                  <span>{t('ownership.card.exitLimits')}</span>
+                  <span className="text-emerald-600 font-black font-sans">{t('ownership.card.exitValue')}</span>
                 </div>
               </div>
 
               <div className="pt-2">
                 <button 
                   onClick={() => setAccessModalOpen(true)}
-                  className="w-full text-center py-3 bg-blue-600 hover:bg-blue-650 text-xs font-bold text-white rounded-xl transition-all shadow-md active:scale-98 cursor-pointer"
+                  className="w-full text-center py-3 bg-blue-600 hover:bg-blue-650 text-xs font-bold text-white rounded-xl transition-all shadow-md active:scale-98 cursor-pointer font-sans"
                 >
-                  Request Early Access Invitation →
+                  {t('ownership.card.btn')}
                 </button>
               </div>
             </div>
@@ -1163,18 +1195,18 @@ export default function App() {
       </section>
 
       {/* SECTION 9 — FAQ */}
-      <section className="py-20 border-b border-slate-200 bg-slate-50 relative font-sans" id="faq">
+      <section className="py-20 border-b border-slate-200 bg-slate-50 relative font-sans text-left" id="faq">
         <div className="max-w-4xl mx-auto px-4 sm:px-6">
           
           <div className="text-center space-y-3 mb-12">
             <span className="text-xs font-mono uppercase tracking-widest text-blue-600 font-bold block">
-              SECTION 09 — ACCRUED FAQ
+              {t('faq.tagline')}
             </span>
-            <h2 className="text-3xl font-bold text-slate-900 tracking-tight">
-              Frequently Answered Questions
+            <h2 className="text-3xl font-bold text-slate-900 tracking-tight font-sans">
+              {t('faq.title')}
             </h2>
-            <p className="text-slate-600 text-sm font-medium">
-              We focus on complete clarity. If you have additional inquiries, connect inside on-chain discussion channels.
+            <p className="text-slate-600 text-sm font-medium font-sans">
+              {t('faq.subline')}
             </p>
           </div>
 
@@ -1184,18 +1216,18 @@ export default function App() {
       </section>
 
       {/* SECTION 10 — SOCIAL PROOF / METRICS SIMULATION */}
-      <section className="py-20 border-b border-slate-200 relative bg-white" id="metrics-dashboard">
+      <section className="py-20 border-b border-slate-200 relative bg-white text-left" id="metrics-dashboard">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           
           <div className="text-center max-w-3xl mx-auto space-y-3 mb-12">
             <span className="text-xs font-mono uppercase tracking-widest text-blue-600 font-bold block animate-pulse">
-              SECTION 10 — LIVE HEALTH STATUS
+              {t('liveHealth.tagline')}
             </span>
-            <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 tracking-tight">
-              On-Chain Capital Accrual Analytics
+            <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 tracking-tight font-sans">
+              {t('liveHealth.title')}
             </h2>
-            <p className="text-slate-600 text-sm font-medium">
-              Verify composite stats pulled in real-time as our user pool compounding grows.
+            <p className="text-slate-600 text-sm font-medium font-sans">
+              {t('liveHealth.subline')}
             </p>
           </div>
 
@@ -1205,37 +1237,37 @@ export default function App() {
       </section>
 
       {/* FOOTER CTA SECTION */}
-      <section className="py-20 bg-slate-900 text-slate-200 relative border-t border-slate-800">
+      <section className="py-20 bg-slate-900 text-slate-200 relative border-t border-slate-800 text-center">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 text-center space-y-6">
           
           <div className="max-w-2xl mx-auto space-y-4">
             <span className="text-xs font-mono bg-blue-900/40 border border-blue-800 px-3 py-1 rounded-full inline-block font-semibold text-blue-400">
-              JOIN THE INVITE ONLY SELECTION
+              {t('footer.badge')}
             </span>
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
-              Ready to put your dollars to work?
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight font-sans">
+              {t('footer.title')}
             </h2>
             <p className="text-slate-400 text-xs sm:text-sm leading-relaxed font-mono">
-              Early access is limited to invited accounts. If you received this link from someone you trust, you're already in.
+              {t('footer.subline')}
             </p>
           </div>
 
           <div className="pt-4 flex justify-center">
             <button
               onClick={() => setAccessModalOpen(true)}
-              className="px-8 py-3.5 bg-blue-600 hover:bg-blue-650 text-white text-sm font-bold rounded-xl transition-all shadow-lg flex items-center gap-1.5 active:scale-98 cursor-pointer"
+              className="px-8 py-3.5 bg-blue-600 hover:bg-blue-650 text-white text-sm font-bold rounded-xl transition-all shadow-lg flex items-center gap-1.5 active:scale-98 cursor-pointer font-sans"
             >
-              Request access →
+              {t('footer.cta')}
             </button>
           </div>
 
           {/* Legal Disclaimer block */}
           <div className="pt-12 border-t border-slate-800 text-[10px] text-slate-500 leading-relaxed max-w-4xl mx-auto space-y-4 font-mono">
             <p>
-              This service is provided for informational and operational purposes only. It does not constitute investment advice. Cryptocurrency investments carry risk including total loss of principal. Past performance is not indicative of future results. Each participant maintains full self-custody of their funds at all times.
+              {t('footer.disclaimer')}
             </p>
-            <p className="text-slate-600">
-              © 2026 Base Yield Fund. Powered by Coinbase abstractions and Anthropic Model Context Protocol. All rights reserved.
+            <p className="text-slate-650">
+              {t('footer.copyright')}
             </p>
           </div>
 
@@ -1244,7 +1276,7 @@ export default function App() {
 
       {/* EARLY ACCESS CAPTURE MODAL OVERLAY */}
       {accessModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm animate-fade-in">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm animate-fade-in text-left">
           <div className="bg-white border border-slate-200 rounded-2xl max-w-md w-full p-6 space-y-5 shadow-2xl relative animate-in zoom-in-95 duration-250">
             <button
               onClick={() => {
@@ -1253,39 +1285,39 @@ export default function App() {
               }}
               className="absolute top-4 right-4 text-slate-400 hover:text-slate-900 transition-all text-xs font-mono font-bold cursor-pointer"
             >
-              [esc] CLOSE
+              {t('modal.close')}
             </button>
 
             {!accessRequested ? (
               <form onSubmit={handleRequestAccessSubmit} className="space-y-4">
                 <div className="space-y-1.5 text-left">
-                  <span className="text-[10px] font-mono tracking-wider text-blue-600 uppercase block font-bold">MEMBER ENROLLMENT</span>
-                  <h3 className="text-lg font-extrabold text-slate-900 leading-tight">Request Platform Invitation</h3>
-                  <p className="text-xs text-slate-500 font-semibold leading-relaxed">
-                    Verify account allocation access parameters. Enter your referral coordinates to be prioritized.
+                  <span className="text-[10px] font-mono tracking-wider text-blue-600 uppercase block font-bold">{t('modal.badge')}</span>
+                  <h3 className="text-lg font-extrabold text-slate-900 leading-tight font-sans">{t('modal.title')}</h3>
+                  <p className="text-xs text-slate-500 font-semibold leading-relaxed font-sans">
+                    {t('modal.subline')}
                   </p>
                 </div>
 
                 <div className="space-y-3 text-left">
                   <div className="space-y-1">
-                    <label className="text-[10px] font-mono text-slate-400 uppercase font-bold">Referral Invitation Code (Optional)</label>
+                    <label className="text-[10px] font-mono text-slate-400 uppercase font-bold">{t('modal.codeLabel')}</label>
                     <input
                       type="text"
                       value={referralCode}
                       onChange={(e) => setReferralCode(e.target.value)}
-                      placeholder="e.g. BASE-YIELD-772"
+                      placeholder={t('modal.codePlaceholder')}
                       className="w-full bg-slate-50 border border-slate-200 rounded-lg py-2 px-3 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-600 font-mono"
                     />
                   </div>
 
                   <div className="space-y-1">
-                    <label className="text-[10px] font-mono text-slate-400 uppercase font-bold">Email Coordinates</label>
+                    <label className="text-[10px] font-mono text-slate-400 uppercase font-bold">{t('modal.emailLabel')}</label>
                     <input
                       type="email"
                       required
                       value={emailInput}
                       onChange={(e) => setEmailInput(e.target.value)}
-                      placeholder="Enter your secure email address"
+                      placeholder={t('modal.emailPlaceholder')}
                       className="w-full bg-slate-50 border border-slate-200 rounded-lg py-2 px-3 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-600 font-sans"
                     />
                   </div>
@@ -1293,24 +1325,24 @@ export default function App() {
 
                 <button
                   type="submit"
-                  className="w-full text-center py-2.5 bg-blue-600 hover:bg-blue-650 text-xs text-white font-bold rounded-lg transition-all cursor-pointer shadow-md"
+                  className="w-full text-center py-2.5 bg-blue-600 hover:bg-blue-650 text-xs text-white font-bold rounded-lg transition-all cursor-pointer shadow-md font-sans"
                 >
-                  Request Early Access Invite Coords
+                  {t('modal.btnSubmit')}
                 </button>
 
                 <p className="text-[10px] text-slate-400 font-mono text-center leading-relaxed">
-                  *We do not request credentials or seed logs. We only track secure passkey credentials coordinates.
+                  {t('modal.legalNote')}
                 </p>
               </form>
             ) : (
               <div className="text-center py-6 space-y-4">
                 <div className="w-12 h-12 rounded-full bg-emerald-50 border border-emerald-200 flex items-center justify-center mx-auto text-emerald-600 font-bold">
-                  <Check className="w-6 h-6" />
+                  <Check className="w-6 h-6 animate-bounce" />
                 </div>
                 <div className="space-y-1">
-                  <h3 className="text-base font-extrabold text-slate-900">Access Coordinates Queued</h3>
+                  <h3 className="text-base font-extrabold text-slate-900 font-sans">{t('modal.successTitle')}</h3>
                   <p className="text-xs text-slate-500 max-w-[280px] mx-auto leading-relaxed font-mono font-bold">
-                    Welcome to the Base Yield Fund. Your request has been logged. Invitation keys will dispatch to your coordinates if slot quotas permit.
+                    {t('modal.successDesc')}
                   </p>
                 </div>
                 <button
@@ -1320,7 +1352,7 @@ export default function App() {
                   }}
                   className="px-6 py-2 border border-slate-200 hover:border-slate-300 text-xs text-slate-600 rounded-lg hover:text-slate-900 transition-all font-mono font-bold cursor-pointer"
                 >
-                  Verify Complete
+                  {t('modal.successBtn')}
                 </button>
               </div>
             )}

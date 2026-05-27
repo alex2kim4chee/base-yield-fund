@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
-import { RISK_PROFILES } from '../data';
+import { useLanguage } from '../context/LanguageContext';
 import { Shield, TrendingUp, Sparkles, DollarSign, Percent, AlertCircle } from 'lucide-react';
 
 export default function DynamicCalculator() {
+  const { t, language } = useLanguage();
+  const RISK_PROFILES = t('riskProfiles');
   const [depositAmount, setDepositAmount] = useState<number>(1000);
   const [selectedRisk, setSelectedRisk] = useState<'conservative' | 'balanced' | 'growth'>('balanced');
 
@@ -23,28 +25,28 @@ export default function DynamicCalculator() {
       lossEstimate = depositAmount * 0.05; // 5% max possible bad-debt event
       extraComparison = depositAmount * 0.04;
       return {
-        loss: lossEstimate.toLocaleString('en-US', { maximumFractionDigits: 2 }),
-        extra: extraComparison.toLocaleString('en-US', { maximumFractionDigits: 2 }),
-        level: 'Minimal Systemic',
-        text: `Conservative vaults leverage top-rated curators. Main risk is pure smart contract code bugs rather than bad-debt liquidations.`
+        loss: lossEstimate.toLocaleString(language === 'ru' ? 'ru-RU' : 'en-US', { maximumFractionDigits: 2 }),
+        extra: extraComparison.toLocaleString(language === 'ru' ? 'ru-RU' : 'en-US', { maximumFractionDigits: 2 }),
+        level: t('calculator.disclosure.levelMinimal'),
+        text: t('calculator.disclosure.textConservative')
       };
     } else if (selectedRisk === 'balanced') {
       lossEstimate = depositAmount * 0.12; // 12% in extreme bad debt event
       extraComparison = depositAmount * 0.09;
       return {
-        loss: lossEstimate.toLocaleString('en-US', { maximumFractionDigits: 2 }),
-        extra: extraComparison.toLocaleString('en-US', { maximumFractionDigits: 2 }),
-        level: 'Moderate Borrowing Shift',
-        text: `Potential bad-debt event in secondary collateral assets on Moonwell. This represents a robust risk-to-yield ratio.`
+        loss: lossEstimate.toLocaleString(language === 'ru' ? 'ru-RU' : 'en-US', { maximumFractionDigits: 2 }),
+        extra: extraComparison.toLocaleString(language === 'ru' ? 'ru-RU' : 'en-US', { maximumFractionDigits: 2 }),
+        level: t('calculator.disclosure.levelModerate'),
+        text: t('calculator.disclosure.textBalanced')
       };
     } else {
       lossEstimate = depositAmount * 0.25; // 25% under outlier LP drift
       extraComparison = depositAmount * 0.18;
       return {
-        loss: lossEstimate.toLocaleString('en-US', { maximumFractionDigits: 2 }),
-        extra: extraComparison.toLocaleString('en-US', { maximumFractionDigits: 2 }),
-        level: 'Elevated Volatility LP Drift',
-        text: `Active exposure to trading LP pools (Aerodrome) and leveraged tracer counterparties. Higher yield margin with calculated downside limits.`
+        loss: lossEstimate.toLocaleString(language === 'ru' ? 'ru-RU' : 'en-US', { maximumFractionDigits: 2 }),
+        extra: extraComparison.toLocaleString(language === 'ru' ? 'ru-RU' : 'en-US', { maximumFractionDigits: 2 }),
+        level: t('calculator.disclosure.levelElevated'),
+        text: t('calculator.disclosure.textGrowth')
       };
     }
   };
@@ -66,20 +68,20 @@ export default function DynamicCalculator() {
         <div className="flex-1 space-y-5">
           <div>
             <span className="text-[10px] font-mono uppercase tracking-wider text-blue-600 font-bold flex items-center gap-1 mb-1">
-              <Sparkles className="w-3.5 h-3.5" /> Interactive Yield Engine
+              <Sparkles className="w-3.5 h-3.5" /> {t('calculator.badge')}
             </span>
             <h3 className="text-xl font-bold text-slate-900 tracking-tight">
-              Test your configuration
+              {t('calculator.title')}
             </h3>
             <p className="text-xs text-slate-500 mt-1">
-              Adjust your allocation amount and appetite parameters to simulate real-time performance.
+              {t('calculator.desc')}
             </p>
           </div>
 
           {/* USDC Input slider */}
           <div className="space-y-2.5">
             <div className="flex justify-between items-center">
-              <label className="text-xs font-semibold text-slate-700">Deposit Capital</label>
+              <label className="text-xs font-semibold text-slate-700">{t('calculator.depositLabel')}</label>
               <div className="relative">
                 <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400 font-mono text-xs">$</span>
                 <input
@@ -104,19 +106,20 @@ export default function DynamicCalculator() {
               className="w-full h-1.5 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-blue-600"
             />
             <div className="flex justify-between text-[9px] font-mono text-slate-400 uppercase tracking-wider">
-              <span>Min: $100 USDC</span>
-              {depositAmount > 10000 && <span className="text-blue-600 font-bold">Custom Value Locked</span>}
-              <span>Max: $10,000 USDC (Slider)</span>
+              <span>{language === 'ru' ? 'Мин: $100 USDC' : 'Min: $100 USDC'}</span>
+              {depositAmount > 10000 && <span className="text-blue-600 font-bold">{language === 'ru' ? 'Лимит слайдера превышен' : 'Slider Limit Exceeded'}</span>}
+              <span>{language === 'ru' ? 'Макс: $10 000 USDC (Слайдер)' : 'Max: $10,000 USDC (Slider)'}</span>
             </div>
           </div>
 
           {/* Select Risk Appetite */}
           <div className="space-y-2.5">
-            <label className="text-xs font-semibold text-slate-700">Risk Profile Appetite</label>
+            <label className="text-xs font-semibold text-slate-700">{t('calculator.riskLabel')}</label>
             <div className="grid grid-cols-3 gap-2">
               {(['conservative', 'balanced', 'growth'] as const).map((tier) => {
                 const isActive = selectedRisk === tier;
                 const p = RISK_PROFILES[tier];
+                const tierName = t(`calculator.riskTiers.${tier}`);
                 return (
                   <button
                     key={tier}
@@ -127,11 +130,11 @@ export default function DynamicCalculator() {
                         : 'bg-white border-slate-200 text-slate-600 hover:border-slate-300 hover:bg-slate-50'
                     }`}
                   >
-                    <span className="block text-[10px] font-bold uppercase tracking-wider opacity-80">{tier}</span>
+                    <span className="block text-[10px] font-bold uppercase tracking-wider opacity-80">{tierName}</span>
                     <span className="block text-base font-mono font-bold mt-1 text-slate-900">
                       {p.expectedApyRange[0]}-{p.expectedApyRange[1]}%
                     </span>
-                    <span className="block text-[9px] text-slate-500 font-mono mt-0.5">APY TARGET</span>
+                    <span className="block text-[9px] text-slate-500 font-mono mt-0.5">{t('calculator.riskTiers.target')}</span>
                   </button>
                 );
               })}
@@ -143,15 +146,19 @@ export default function DynamicCalculator() {
             <div className="flex items-center gap-1.5 text-red-700">
               <AlertCircle className="w-3.5 h-3.5 shrink-0" />
               <h4 className="text-[10px] font-bold uppercase tracking-wider font-mono">
-                Dollar-Denominated Risk Disclosure
+                {t('calculator.disclosure.title')}
               </h4>
             </div>
             <div className="border-l-2 border-red-200 pl-2.5">
               <p className="text-xs text-slate-700 leading-relaxed font-mono">
-                "Realistic scenario downside on <span className="text-slate-900 font-bold">${depositAmount.toLocaleString()}</span>: <span className="text-red-600 font-bold">${disclosure.loss}</span> in a default bad-debt event. Net yield vs. standard bank deposit: <span className="text-emerald-600 font-bold">+{disclosure.extra}/year</span>."
+                {language === 'ru' ? (
+                  `"Ожидаемый худший сценарий при $${depositAmount.toLocaleString('ru-RU')}: потеря до $${disclosure.loss} при дефолте пула. Дополнительный чистый доход в год по сравнению с банком: +$${disclosure.extra}."`
+                ) : (
+                  `"Realistic scenario downside on $${depositAmount.toLocaleString('en-US')}: $${disclosure.loss} in a default bad-debt event. Net yield vs. standard bank deposit: +$${disclosure.extra}/year."`
+                )}
               </p>
               <p className="text-[10px] text-slate-500 mt-1">
-                <strong>Safety status:</strong> {disclosure.level}. {disclosure.text}
+                <strong>{t('calculator.disclosure.safetyStatus')}</strong> {disclosure.level}. {disclosure.text}
               </p>
             </div>
           </div>
@@ -161,7 +168,7 @@ export default function DynamicCalculator() {
         {/* Right Output results */}
         <div className="flex-1 bg-slate-50 rounded-xl border border-slate-200 p-5 flex flex-col justify-between space-y-5">
           <div>
-            <span className="text-[9px] font-mono uppercase tracking-widest text-slate-400 block mb-0.5">PROJECTED RETURN SIMULATION</span>
+            <span className="text-[9px] font-mono uppercase tracking-widest text-slate-400 block mb-0.5">{t('calculator.simTitle')}</span>
             <h4 className="text-sm font-bold text-slate-900">{profile.name}</h4>
             <p className="text-xs text-slate-500 mt-0.5 leading-relaxed">{profile.description}</p>
           </div>
@@ -169,21 +176,21 @@ export default function DynamicCalculator() {
           {/* Numbers block */}
           <div className="grid grid-cols-2 gap-4 py-3 border-y border-slate-200">
             <div>
-              <span className="text-[9px] font-mono text-slate-400 block tracking-wider uppercase">ESTIMATED APY</span>
+              <span className="text-[9px] font-mono text-slate-400 block tracking-wider uppercase">{t('calculator.apyTitle')}</span>
               <div className="flex items-baseline gap-1 mt-0.5">
                 <span className="text-2xl font-mono font-bold text-slate-950 tracking-tight">
                   {averageApy.toFixed(1)}%
                 </span>
                 <span className="text-[10px] text-emerald-600 font-bold flex items-center gap-0.5">
-                  <TrendingUp className="w-3 h-3" /> compiled
+                  <TrendingUp className="w-3 h-3" /> {t('calculator.apyCompiled')}
                 </span>
               </div>
             </div>
             <div>
-              <span className="text-[9px] font-mono text-slate-400 block tracking-wider uppercase">MONTHLY EARNINGS</span>
+              <span className="text-[9px] font-mono text-slate-400 block tracking-wider uppercase">{t('calculator.monthlyTitle')}</span>
               <div className="flex items-baseline gap-1 mt-0.5">
                 <span className="text-2xl font-mono font-bold text-emerald-600 tracking-tight">
-                  +${estimatedMonthly.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                  +${estimatedMonthly.toLocaleString(language === 'ru' ? 'ru-RU' : 'en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </span>
                 <span className="text-[10px] text-slate-500 font-mono">USDC</span>
               </div>
@@ -192,7 +199,7 @@ export default function DynamicCalculator() {
 
           {/* Stacked allocation bar */}
           <div className="space-y-2.5">
-            <span className="text-[9px] font-mono text-slate-400 block tracking-wider uppercase">Fund Allocation Weight</span>
+            <span className="text-[9px] font-mono text-slate-400 block tracking-wider uppercase">{t('calculator.weightTitle')}</span>
             <div className="w-full h-2 rounded-full bg-slate-200 overflow-hidden flex">
               {profile.allocations.map((alloc, idx) => {
                 const colors = ['bg-blue-600', 'bg-blue-400', 'bg-indigo-500', 'bg-emerald-500'];
@@ -229,7 +236,7 @@ export default function DynamicCalculator() {
           <div className="flex gap-2 items-start text-[10px] text-slate-500 bg-white p-2.5 rounded border border-slate-200 shadow-tiny">
             <Shield className="w-3.5 h-3.5 mt-0.5 shrink-0 text-blue-600" />
             <p className="leading-snug">
-              *All allocations automatically stay on your device under strict 100% self-custody. Every strategic migration requires your cryptographically verified hardware-passkey click or approving tap.
+              {t('calculator.disclaimer')}
             </p>
           </div>
 

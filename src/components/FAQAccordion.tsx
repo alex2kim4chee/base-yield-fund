@@ -1,9 +1,11 @@
 import { useState } from 'react';
-import { FAQS } from '../data';
+import { useLanguage } from '../context/LanguageContext';
 import { ChevronDown, HelpCircle } from 'lucide-react';
 
 export default function FAQAccordion() {
   const [openIdx, setOpenIdx] = useState<number | null>(0);
+  const { t } = useLanguage();
+  const faqs = t('faqs');
 
   const toggle = (idx: number) => {
     setOpenIdx(openIdx === idx ? null : idx);
@@ -11,7 +13,7 @@ export default function FAQAccordion() {
 
   return (
     <div className="space-y-3" id="faq-section">
-      {FAQS.map((faq, idx) => {
+      {faqs.map((faq: any, idx: number) => {
         const isOpen = openIdx === idx;
         return (
           <div
