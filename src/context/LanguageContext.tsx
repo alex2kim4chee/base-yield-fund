@@ -11,9 +11,33 @@ interface LanguageContextType {
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
-export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+// Helper to detect if running on a subfolder (like GitHub Pages base path)
+const getBasePath = () => {
+  if (typeof window !== 'undefined') {
+    const path = window.location.pathname;
+    if (path.includes('/base-yield-fund')) {
+      return '/base-yield-fund';
+    }
+  }
+  return '';
+};
+
+export const LanguageProvider: React.FC<{ children: React.ReactNode; initialLanguage?: Language }> = ({ children, initialLanguage }) => {
   const getInitialLanguage = (): Language => {
+    if (initialLanguage) return initialLanguage;
+    
     if (typeof window !== 'undefined') {
+      const path = window.location.pathname;
+      const basePath = getBasePath();
+      const relativePath = path.substring(basePath.length);
+      
+      if (relativePath.startsWith('/en') || relativePath.includes('/en/')) {
+        return 'en';
+      }
+      if (relativePath.startsWith('/ru') || relativePath.includes('/ru/')) {
+        return 'ru';
+      }
+
       const params = new URLSearchParams(window.location.search);
       const langParam = params.get('lang');
       if (langParam === 'en' || langParam === 'ru') {
@@ -40,10 +64,9 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     if (typeof window !== 'undefined') {
       localStorage.setItem('preferred_language', lang);
       
-      // Update URL query parameters without reloading
-      const url = new URL(window.location.href);
-      url.searchParams.set('lang', lang);
-      window.history.replaceState({}, '', url.toString());
+      const basePath = getBasePath();
+      const targetPath = lang === 'en' ? `${basePath}/en/` : `${basePath}/`;
+      window.history.pushState({}, '', targetPath);
     }
   };
 
@@ -51,12 +74,14 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     // 1. Update HTML lang attribute
     document.documentElement.lang = language;
 
-    // Align URL parameter on initial load if not set
+    // Align URL path on initial load if not set
     if (typeof window !== 'undefined') {
-      const url = new URL(window.location.href);
-      if (url.searchParams.get('lang') !== language) {
-        url.searchParams.set('lang', language);
-        window.history.replaceState({}, '', url.toString());
+      const currentPath = window.location.pathname;
+      const basePath = getBasePath();
+      const targetPath = language === 'en' ? `${basePath}/en/` : `${basePath}/`;
+      
+      if (currentPath !== targetPath && currentPath !== targetPath.slice(0, -1)) {
+        window.history.replaceState({}, '', targetPath);
       }
     }
 
