@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <defs>
+    <!-- Background Gradient -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0b1528" />
+      <stop offset="100%" stop-color="#030712" />
+    </linearGradient>
+    <!-- Base Blue Glow -->
+    <linearGradient id="baseGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#0052ff" />
+      <stop offset="100%" stop-color="#3b82f6" />
+    </linearGradient>
+    <!-- Yield Green Glow -->
+    <linearGradient id="yieldGrad" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#059669" />
+      <stop offset="100%" stop-color="#10b981" />
+    </linearGradient>
+    <!-- Shadow filter for premium 3D look -->
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="12" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+
+  <!-- Background Circle -->
+  <circle cx="256" cy="256" r="240" fill="url(#bgGrad)" stroke="#1e293b" stroke-width="6" />
+
+  <!-- Base Circle Logo Pattern (Coinbase/Base network style) -->
+  <circle cx="256" cy="256" r="140" fill="none" stroke="url(#baseGrad)" stroke-width="24" stroke-dasharray="600 300" stroke-linecap="round" transform="rotate(-45 256 256)" filter="url(#glow)" />
+  <circle cx="256" cy="256" r="100" fill="none" stroke="#ffffff" stroke-width="6" stroke-opacity="0.15" />
+
+  <!-- Rising Arrow / Trend Line (Yield Symbolism) -->
+  <path d="M160 352 L230 282 L290 322 L370 200" fill="none" stroke="url(#yieldGrad)" stroke-width="26" stroke-linecap="round" stroke-linejoin="round" filter="url(#glow)" />
+  <!-- Arrow Head -->
+  <path d="M320 200 L370 200 L370 250" fill="none" stroke="url(#yieldGrad)" stroke-width="26" stroke-linecap="round" stroke-linejoin="round" filter="url(#glow)" />
+
+  <!-- Accent glow point -->
+  <circle cx="370" cy="200" r="10" fill="#ffffff" filter="url(#glow)" />
+</svg>
