@@ -12,11 +12,53 @@ interface LanguageContextType {
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
 export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [language, setLanguage] = useState<Language>('ru'); // Russian is default
+  const getInitialLanguage = (): Language => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const langParam = params.get('lang');
+      if (langParam === 'en' || langParam === 'ru') {
+        return langParam as Language;
+      }
+      
+      const savedLang = localStorage.getItem('preferred_language');
+      if (savedLang === 'en' || savedLang === 'ru') {
+        return savedLang as Language;
+      }
+      
+      const browserLang = navigator.language.split('-')[0];
+      if (browserLang === 'en' || browserLang === 'ru') {
+        return browserLang as Language;
+      }
+    }
+    return 'ru'; // Russian is default
+  };
+
+  const [language, setLanguageState] = useState<Language>(getInitialLanguage);
+
+  const setLanguage = (lang: Language) => {
+    setLanguageState(lang);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('preferred_language', lang);
+      
+      // Update URL query parameters without reloading
+      const url = new URL(window.location.href);
+      url.searchParams.set('lang', lang);
+      window.history.replaceState({}, '', url.toString());
+    }
+  };
 
   useEffect(() => {
     // 1. Update HTML lang attribute
     document.documentElement.lang = language;
+
+    // Align URL parameter on initial load if not set
+    if (typeof window !== 'undefined') {
+      const url = new URL(window.location.href);
+      if (url.searchParams.get('lang') !== language) {
+        url.searchParams.set('lang', language);
+        window.history.replaceState({}, '', url.toString());
+      }
+    }
 
     // 2. Set dynamic translations for SEO elements
     const seoData = {
