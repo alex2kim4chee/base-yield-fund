@@ -104,18 +104,23 @@ export default function MetricsDashboard() {
 
   const [capital, setCapital] = useState(100_000);
 
-  const { pnl, dailyYield, breakEvenDays, maxAbsVal } = useMemo(() => {
+  const { pnl, dailyYield, breakEvenDays, maxAbsVal, blendedApy } = useMemo(() => {
     const k = capital / BASE;
     const totalPnl = EVENTS.reduce((acc, e) => acc + e.pnlBase * k, 0);
     const daily = POSITIONS.reduce((acc, p) => acc + capital * p.allocation * p.apy / 365, 0);
     const maxA = Math.max(
       ...EVENTS.filter(e => e.pnlBase !== 0).map(e => Math.abs(e.pnlBase * k))
     );
+    const totalAlloc = POSITIONS.reduce((acc, p) => acc + p.allocation, 0);
+    const blended = totalAlloc > 0
+      ? POSITIONS.reduce((acc, p) => acc + p.allocation * p.apy, 0) / totalAlloc
+      : 0;
     return {
       pnl: totalPnl,
       dailyYield: daily,
       breakEvenDays: totalPnl < 0 ? Math.round(Math.abs(totalPnl) / daily) : 0,
       maxAbsVal: maxA,
+      blendedApy: blended,
     };
   }, [capital]);
 
@@ -146,6 +151,14 @@ export default function MetricsDashboard() {
         </div>
         <div className="flex justify-between text-[10px] font-mono text-slate-400 px-0.5">
           <span>$1K</span><span>$250K</span><span>$500K</span><span>$750K</span><span>$1M</span>
+        </div>
+        <div className="mt-3 flex items-center gap-2">
+          <span className="text-[9px] font-mono font-bold text-slate-400 uppercase tracking-widest">
+            {s('Средн. APY', 'Blended APY')}
+          </span>
+          <span className="text-sm font-mono font-bold text-emerald-600">
+            {(blendedApy * 100).toFixed(2)}%
+          </span>
         </div>
       </div>
 
