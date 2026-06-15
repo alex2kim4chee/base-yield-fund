@@ -23,8 +23,8 @@ const EVENTS = [
   {
     dateRu: '27 май 2026', dateEn: 'May 27, 2026',
     nameRu: 'Morpho HY v1.1 + Moonwell', nameEn: 'Morpho HY v1.1 + Moonwell',
-    descRu: 'Вторая половина: HY vault + тест Moonwell ($25)',
-    descEn: 'Second half: HY vault + Moonwell test ($25)',
+    descRu: 'Вторая половина: HY vault + тест Moonwell ($25 000)',
+    descEn: 'Second half: HY vault + Moonwell test ($25,000)',
     pnlBase: 0, type: 'open' as const,
   },
   {
