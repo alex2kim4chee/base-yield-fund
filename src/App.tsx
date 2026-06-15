@@ -22,12 +22,25 @@ import {
 } from 'lucide-react';
 import DynamicCalculator from './components/DynamicCalculator';
 import AIPositionSimulator from './components/AIPositionSimulator';
-import MetricsDashboard from './components/MetricsDashboard';
+import MetricsDashboard, { EVENTS, POSITIONS, BASE } from './components/MetricsDashboard';
 import FAQAccordion from './components/FAQAccordion';
 import { useLanguage } from './context/LanguageContext';
 
 export default function App() {
   const { t, language, setLanguage } = useLanguage();
+
+  // Calculate dynamic header stats from MetricsDashboard source of truth
+  const DEFAULT_CAPITAL = 100000;
+  const k = DEFAULT_CAPITAL / BASE;
+  const totalPnl = EVENTS.reduce((acc, e) => acc + e.pnlBase * k, 0);
+  const portfolioNow = DEFAULT_CAPITAL + totalPnl;
+
+  const totalAlloc = POSITIONS.reduce((acc, p) => acc + p.allocation, 0);
+  const blendedApy = totalAlloc > 0
+    ? POSITIONS.reduce((acc, p) => acc + p.allocation * p.apy, 0) / totalAlloc
+    : 0;
+  const netAvgApy = blendedApy * 100;
+
   const [selectedTechSection, setSelectedTechSection] = useState<string>('base');
   const [strategyFilter, setStrategyFilter] = useState<string>('All');
   const [accessModalOpen, setAccessModalOpen] = useState<boolean>(false);
@@ -110,11 +123,15 @@ export default function App() {
           <div className="hidden lg:flex items-center gap-6 text-xs text-slate-500 font-mono font-semibold">
             <div>
               <span className="text-slate-400 mr-1.5 uppercase font-bold">{t('nav.compoundPool')}</span>
-              <span className="text-slate-900 font-bold animate-pulse">$8,421,412.50 USDC</span>
+              <span className="text-slate-900 font-bold animate-pulse">
+                {'$' + portfolioNow.toLocaleString(language === 'ru' ? 'ru-RU' : 'en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} USDC
+              </span>
             </div>
             <div>
               <span className="text-slate-400 mr-1.5 uppercase font-bold">{t('nav.netAvgApy')}</span>
-              <span className="text-emerald-600 font-bold">8.94%</span>
+              <span className="text-emerald-600 font-bold">
+                {netAvgApy.toFixed(2)}%
+              </span>
             </div>
           </div>
 
@@ -312,7 +329,7 @@ export default function App() {
                 <div className="space-y-1">
                   <div className="flex justify-between items-center text-xs font-mono font-bold">
                     <span className="text-slate-700">{t('problem.compareFund')}</span>
-                    <span className="text-emerald-600">8.94% - 25% APY</span>
+                    <span className="text-emerald-600">{netAvgApy.toFixed(2)}% – 25% APY</span>
                   </div>
                   <div className="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden">
                     <div className="w-[85%] h-full bg-gradient-to-r from-blue-600 to-emerald-500" />

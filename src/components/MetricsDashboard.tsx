@@ -12,7 +12,7 @@ import { useLanguage } from '../context/LanguageContext';
 //   'pos'  = income / yield realized or accrued
 //   'neg'  = loss / fee paid
 
-const EVENTS = [
+export const EVENTS = [
   {
     dateRu: '26–27 май 2026', dateEn: 'May 26–27, 2026',
     nameRu: 'Morpho Prime открыт', nameEn: 'Morpho Prime opened',
@@ -73,7 +73,7 @@ const EVENTS = [
 
 // Active positions — update as portfolio changes
 // allocation: fraction of base $100 capital actually deployed (e.g. $50.106 → 0.50106)
-const POSITIONS = [
+export const POSITIONS = [
   {
     nameRu: 'Morpho Prime (steakUSDC)', nameEn: 'Morpho Prime (steakUSDC)',
     allocation: 0.50106, apy: 0.0477,
@@ -84,7 +84,7 @@ const POSITIONS = [
   },
 ];
 
-const BASE = 100; // USD — all pnlBase values are relative to this
+export const BASE = 100; // USD — all pnlBase values are relative to this
 // ────────────────────────────────────────────────────────────────────────────
 
 function usd(v: number, sign = false): string {
