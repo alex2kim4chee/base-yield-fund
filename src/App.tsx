@@ -18,7 +18,8 @@ import {
   LockKeyhole,
   CheckCircle,
   Globe2,
-  FileCheck
+  FileCheck,
+  Mail
 } from 'lucide-react';
 import DynamicCalculator from './components/DynamicCalculator';
 import AIPositionSimulator from './components/AIPositionSimulator';
@@ -44,9 +45,6 @@ export default function App() {
   const [selectedTechSection, setSelectedTechSection] = useState<string>('base');
   const [strategyFilter, setStrategyFilter] = useState<string>('All');
   const [accessModalOpen, setAccessModalOpen] = useState<boolean>(false);
-  const [referralCode, setReferralCode] = useState<string>('');
-  const [emailInput, setEmailInput] = useState<string>('');
-  const [accessRequested, setAccessRequested] = useState<boolean>(false);
 
   // Track checked state of interactive checklist
   const [checkedItems, setCheckedItems] = useState<Record<number, boolean>>({
@@ -62,17 +60,21 @@ export default function App() {
     }));
   };
 
-  const handleRequestAccessSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (emailInput.trim()) {
-      setAccessRequested(true);
-      setTimeout(() => {
-        // Clear inputs on success
-        setEmailInput('');
-        setReferralCode('');
-      }, 5000);
-    }
-  };
+  const accessMailto = `mailto:hello@baseyieldfund.com?subject=${encodeURIComponent(
+    language === 'ru' ? 'Запрос доступа в Base Yield Fund' : 'Access Request - Base Yield Fund'
+  )}&body=${encodeURIComponent(
+    language === 'ru'
+      ? 'Здравствуйте!\n\nЯ бы хотел подать заявку на ранний доступ к стратегиям Base Yield Fund.\n\nПланируемый объем депозита: $______ USDC (минимальный порог от $1,000).\n\nС уважением,'
+      : 'Hello!\n\nI would like to apply for early access to the Base Yield Fund strategies.\n\nPlanned deposit size: $______ USDC (minimum entry size of $1,000).\n\nRegards,'
+  )}`;
+
+  const reportMailto = `mailto:report@baseyieldfund.com?subject=${encodeURIComponent(
+    language === 'ru' ? 'Запрос отчета по позициям Base Yield Fund' : 'Position Report Request - Base Yield Fund'
+  )}&body=${encodeURIComponent(
+    language === 'ru'
+      ? 'Здравствуйте!\n\nПрошу предоставить актуальный детальный отчет по текущим DeFi-позициям, начисленной доходности и ребалансировкам.\n\nС уважением,'
+      : 'Hello!\n\nPlease provide the latest detailed report on current DeFi allocations, yields, and system rebalances.\n\nRegards,'
+  )}`;
 
   // Tech items list pulled dynamically based on translation keys
   const techItemIds = ['base', 'erc4337', 'morpho', 'moonwell', 'aerodrome', 'fluid', 'avantis', 'aave', 'claude'];
@@ -1300,83 +1302,73 @@ export default function App() {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm animate-fade-in text-left">
           <div className="bg-white border border-slate-200 rounded-2xl max-w-md w-full p-6 space-y-5 shadow-2xl relative animate-in zoom-in-95 duration-250">
             <button
-              onClick={() => {
-                setAccessModalOpen(false);
-                setAccessRequested(false);
-              }}
+              onClick={() => setAccessModalOpen(false)}
               className="absolute top-4 right-4 text-slate-400 hover:text-slate-900 transition-all text-xs font-mono font-bold cursor-pointer"
             >
               {t('modal.close')}
             </button>
 
-            {!accessRequested ? (
-              <form onSubmit={handleRequestAccessSubmit} className="space-y-4">
-                <div className="space-y-1.5 text-left">
-                  <span className="text-[10px] font-mono tracking-wider text-blue-600 uppercase block font-bold">{t('modal.badge')}</span>
-                  <h3 className="text-lg font-extrabold text-slate-900 leading-tight font-sans">{t('modal.title')}</h3>
-                  <p className="text-xs text-slate-500 font-semibold leading-relaxed font-sans">
-                    {t('modal.subline')}
-                  </p>
-                </div>
+            <div className="space-y-1.5 text-left">
+              <span className="text-[10px] font-mono tracking-wider text-blue-600 uppercase block font-bold">{t('modal.badge')}</span>
+              <h3 className="text-lg font-extrabold text-slate-900 leading-tight font-sans">{t('modal.title')}</h3>
+              <p className="text-xs text-slate-500 font-semibold leading-relaxed font-sans">
+                {t('modal.subline')}
+              </p>
+            </div>
 
-                <div className="space-y-3 text-left">
-                  <div className="space-y-1">
-                    <label className="text-[10px] font-mono text-slate-400 uppercase font-bold">{t('modal.codeLabel')}</label>
-                    <input
-                      type="text"
-                      value={referralCode}
-                      onChange={(e) => setReferralCode(e.target.value)}
-                      placeholder={t('modal.codePlaceholder')}
-                      className="w-full bg-slate-50 border border-slate-200 rounded-lg py-2 px-3 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-600 font-mono"
-                    />
+            <div className="space-y-4 pt-1">
+              {/* Option 1: Access Request */}
+              <a 
+                href={accessMailto}
+                className="block p-4 rounded-xl border border-slate-100 hover:border-blue-200 bg-slate-50/50 hover:bg-blue-50/10 transition-all group"
+              >
+                <div className="flex gap-3 items-start">
+                  <div className="p-2 rounded-lg bg-blue-50 text-blue-600 group-hover:bg-blue-100 transition-all shrink-0">
+                    <Mail className="w-5 h-5" />
                   </div>
-
                   <div className="space-y-1">
-                    <label className="text-[10px] font-mono text-slate-400 uppercase font-bold">{t('modal.emailLabel')}</label>
-                    <input
-                      type="email"
-                      required
-                      value={emailInput}
-                      onChange={(e) => setEmailInput(e.target.value)}
-                      placeholder={t('modal.emailPlaceholder')}
-                      className="w-full bg-slate-50 border border-slate-200 rounded-lg py-2 px-3 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-600 font-sans"
-                    />
+                    <h4 className="text-sm font-bold text-slate-900 flex items-center gap-1.5 font-sans">
+                      {t('modal.accessTitle')}
+                      <ChevronRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-blue-600 group-hover:translate-x-0.5 transition-all" />
+                    </h4>
+                    <p className="text-xs text-slate-500 font-semibold leading-relaxed font-sans">
+                      {t('modal.accessDesc')}
+                    </p>
+                    <span className="inline-block text-[10px] font-mono font-bold text-blue-600 bg-blue-50/50 px-2 py-0.5 rounded mt-1.5 border border-blue-100/50">
+                      {t('modal.accessBtn')}
+                    </span>
                   </div>
                 </div>
+              </a>
 
-                <button
-                  type="submit"
-                  className="w-full text-center py-2.5 bg-blue-600 hover:bg-blue-650 text-xs text-white font-bold rounded-lg transition-all cursor-pointer shadow-md font-sans"
-                >
-                  {t('modal.btnSubmit')}
-                </button>
+              {/* Option 2: Position Report */}
+              <a 
+                href={reportMailto}
+                className="block p-4 rounded-xl border border-slate-100 hover:border-indigo-200 bg-slate-50/50 hover:bg-indigo-50/10 transition-all group"
+              >
+                <div className="flex gap-3 items-start">
+                  <div className="p-2 rounded-lg bg-indigo-50 text-indigo-600 group-hover:bg-indigo-100 transition-all shrink-0">
+                    <Layers className="w-5 h-5" />
+                  </div>
+                  <div className="space-y-1">
+                    <h4 className="text-sm font-bold text-slate-900 flex items-center gap-1.5 font-sans">
+                      {t('modal.reportTitle')}
+                      <ChevronRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-indigo-600 group-hover:translate-x-0.5 transition-all" />
+                    </h4>
+                    <p className="text-xs text-slate-500 font-semibold leading-relaxed font-sans">
+                      {t('modal.reportDesc')}
+                    </p>
+                    <span className="inline-block text-[10px] font-mono font-bold text-indigo-600 bg-indigo-50/50 px-2 py-0.5 rounded mt-1.5 border border-indigo-100/50">
+                      {t('modal.reportBtn')}
+                    </span>
+                  </div>
+                </div>
+              </a>
+            </div>
 
-                <p className="text-[10px] text-slate-400 font-mono text-center leading-relaxed">
-                  {t('modal.legalNote')}
-                </p>
-              </form>
-            ) : (
-              <div className="text-center py-6 space-y-4">
-                <div className="w-12 h-12 rounded-full bg-emerald-50 border border-emerald-200 flex items-center justify-center mx-auto text-emerald-600 font-bold">
-                  <Check className="w-6 h-6 animate-bounce" />
-                </div>
-                <div className="space-y-1">
-                  <h3 className="text-base font-extrabold text-slate-900 font-sans">{t('modal.successTitle')}</h3>
-                  <p className="text-xs text-slate-500 max-w-[280px] mx-auto leading-relaxed font-mono font-bold">
-                    {t('modal.successDesc')}
-                  </p>
-                </div>
-                <button
-                  onClick={() => {
-                    setAccessModalOpen(false);
-                    setAccessRequested(false);
-                  }}
-                  className="px-6 py-2 border border-slate-200 hover:border-slate-300 text-xs text-slate-600 rounded-lg hover:text-slate-900 transition-all font-mono font-bold cursor-pointer"
-                >
-                  {t('modal.successBtn')}
-                </button>
-              </div>
-            )}
+            <p className="text-[10px] text-slate-400 font-mono text-center leading-relaxed pt-2 border-t border-slate-100">
+              {t('modal.legalNote')}
+            </p>
           </div>
         </div>
       )}

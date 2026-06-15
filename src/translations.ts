@@ -285,15 +285,13 @@ export interface TranslationSchema {
     badge: string;
     title: string;
     subline: string;
-    codeLabel: string;
-    codePlaceholder: string;
-    emailLabel: string;
-    emailPlaceholder: string;
-    btnSubmit: string;
+    accessTitle: string;
+    accessDesc: string;
+    accessBtn: string;
+    reportTitle: string;
+    reportDesc: string;
+    reportBtn: string;
     legalNote: string;
-    successTitle: string;
-    successDesc: string;
-    successBtn: string;
   };
   calculator: {
     badge: string;
@@ -697,18 +695,16 @@ export const translations: Record<'ru' | 'en', TranslationSchema> = {
     },
     modal: {
       close: '[esc] ЗАКРЫТЬ',
-      badge: 'РЕГИСТРАЦИЯ УЧАСТНИКОВ',
-      title: 'Заявка на приглашение в платформу',
-      subline: 'Заполните координаты вашей электронной почты и код приглашения, чтобы встать в приоритетную очередь.',
-      codeLabel: 'Реферальный код приглашения (если есть)',
-      codePlaceholder: 'например, BASE-YIELD-772',
-      emailLabel: 'Ваш E-mail',
-      emailPlaceholder: 'Введите ваш рабочий адрес электронной почты',
-      btnSubmit: 'Отправить заявку на код доступа',
-      legalNote: '*Мы не собираем сид-фразы или пароли. Доступ настраивается через ваш личный биометрический passkey.',
-      successTitle: 'Заявка отправлена в очередь',
-      successDesc: 'Добро пожаловать в Base Yield Fund. Ваша почта зарегистрирована. Коды приглашения будут разосланы на указанный адрес, как только освободятся новые слоты.',
-      successBtn: 'Готово',
+      badge: 'СВЯЗЬ И ДОСТУП',
+      title: 'Связаться с Base Yield Fund',
+      subline: 'Выберите цель вашего обращения для автоматической подготовки запроса.',
+      accessTitle: 'Лист ожидания для доступа',
+      accessDesc: 'Подать заявку на ранний доступ. Пожалуйста, укажите в письме планируемый размер депозита (минимальный порог от $1 000).',
+      accessBtn: 'Подготовить заявку в hello@baseyieldfund.com',
+      reportTitle: 'Запрос отчета по позициям',
+      reportDesc: 'Запросить актуальный детальный отчет по текущим DeFi-позициям, начисленной доходности и ребалансировкам.',
+      reportBtn: 'Запросить отчет в report@baseyieldfund.com',
+      legalNote: '*Шаблон письма будет открыт в вашем почтовом клиенте. Мы никогда не запрашиваем сид-фразы, приватные ключи или пароли.',
     },
     calculator: {
       badge: 'РАСЧЕТ ДОХОДНОСТИ',
@@ -1287,18 +1283,16 @@ export const translations: Record<'ru' | 'en', TranslationSchema> = {
     },
     modal: {
       close: '[esc] CLOSE',
-      badge: 'MEMBER ENROLLMENT',
-      title: 'Request Platform Invitation',
-      subline: 'Verify account allocation access parameters. Enter your referral coordinates to be prioritized.',
-      codeLabel: 'Referral Invitation Code (Optional)',
-      codePlaceholder: 'e.g. BASE-YIELD-772',
-      emailLabel: 'Email Coordinates',
-      emailPlaceholder: 'Enter your secure email address',
-      btnSubmit: 'Request Early Access Invite Coords',
-      legalNote: '*We do not request credentials or seed logs. We only track secure passkey credentials coordinates.',
-      successTitle: 'Access Coordinates Queued',
-      successDesc: 'Welcome to the Base Yield Fund. Your request has been logged. Invitation keys will dispatch to your coordinates if slot quotas permit.',
-      successBtn: 'Verify Complete',
+      badge: 'CONTACT & ACCESS',
+      title: 'Contact Base Yield Fund',
+      subline: 'Select the purpose of your request to automatically prepare a secure email template.',
+      accessTitle: 'Access Waitlist',
+      accessDesc: 'Apply for early access. Please specify your planned deposit size in the email template (minimum entry limit is $1,000).',
+      accessBtn: 'Prepare request to hello@baseyieldfund.com',
+      reportTitle: 'Position Report Request',
+      reportDesc: 'Request a detailed statement of active DeFi allocations, performance metrics, and system rebalances.',
+      reportBtn: 'Request report from report@baseyieldfund.com',
+      legalNote: '*The template will open in your native email client. We never request credentials, seed phrases, or private keys.',
     },
     calculator: {
       badge: 'YIELD CALCULATOR',
