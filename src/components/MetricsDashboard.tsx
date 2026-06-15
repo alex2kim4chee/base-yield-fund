@@ -1,216 +1,292 @@
-import { useState, useEffect } from 'react';
-import { ShieldCheck, Activity, Users, Database, Zap, RefreshCw } from 'lucide-react';
+import { useState, useMemo } from 'react';
+import { Activity } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 
-interface MockTx {
-  id: string;
-  account: string;
-  action: 'Deposit' | 'Rebalance' | 'Yield Compound' | 'Withdraw';
-  amount: string;
-  protocol: string;
-  status: 'Confirmed' | 'Pending';
-  time: string;
+// ─── PORTFOLIO DATA (update as strategy evolves) ────────────────────────────
+//
+// pnlBase: P&L in USD at $100 base capital.
+// To scale to any capital: pnlBase × (capital / 100)
+//
+// type: 'pos' | 'neg' | 'open'
+//   'open' = position opened, no direct P&L impact (pnlBase must be 0)
+//   'pos'  = income / yield realized or accrued
+//   'neg'  = loss / fee paid
+
+const EVENTS = [
+  {
+    dateRu: '26–27 май 2026', dateEn: 'May 26–27, 2026',
+    nameRu: 'Morpho Prime открыт', nameEn: 'Morpho Prime opened',
+    descRu: '50% капитала → lending vault @ 4.47% APY',
+    descEn: '50% of capital → lending vault @ 4.47% APY',
+    pnlBase: 0, type: 'open' as const,
+  },
+  {
+    dateRu: '27 май 2026', dateEn: 'May 27, 2026',
+    nameRu: 'Morpho HY v1.1 + Moonwell', nameEn: 'Morpho HY v1.1 + Moonwell',
+    descRu: 'Вторая половина: HY vault + тест Moonwell ($25)',
+    descEn: 'Second half: HY vault + Moonwell test ($25)',
+    pnlBase: 0, type: 'open' as const,
+  },
+  {
+    dateRu: '29 май 2026', dateEn: 'May 29, 2026',
+    nameRu: 'HY v1.1 → Avantis (реализовано)', nameEn: 'HY v1.1 → Avantis (realized)',
+    descRu: 'Зафиксирован доход HY v1.1 при закрытии позиции',
+    descEn: 'HY v1.1 yield locked in on position close',
+    pnlBase: +0.016152, type: 'pos' as const,
+  },
+  {
+    dateRu: '29 май 2026', dateEn: 'May 29, 2026',
+    nameRu: 'Moonwell → Morpho Prime', nameEn: 'Moonwell → Morpho Prime',
+    descRu: '~$0.05 доход stranded как dust (gas > value)',
+    descEn: '~$0.05 yield stranded as dust (gas > value)',
+    pnlBase: 0, type: 'open' as const,
+  },
+  {
+    dateRu: '15 июн 2026', dateEn: 'Jun 15, 2026',
+    nameRu: 'Avantis: просадка perps vault', nameEn: 'Avantis: perps vault drawdown',
+    descRu: '17 дней — трейдеры в профите, vault в минусе',
+    descEn: '17 days — traders profitable, vault absorbed the loss',
+    pnlBase: -0.434361, type: 'neg' as const,
+  },
+  {
+    dateRu: '15 июн 2026', dateEn: 'Jun 15, 2026',
+    nameRu: 'Avantis: exit fee 0.5%', nameEn: 'Avantis: exit fee 0.5%',
+    descRu: 'Комиссия при выводе — не задокументирована при входе',
+    descEn: 'Withdrawal fee — undocumented at entry',
+    pnlBase: -0.246676, type: 'neg' as const,
+  },
+  {
+    dateRu: '15 июн 2026', dateEn: 'Jun 15, 2026',
+    nameRu: 'Morpho Prime: начисленный yield', nameEn: 'Morpho Prime: accrued yield',
+    descRu: '20 дней @ 4.77%, unrealized в vault',
+    descEn: '20 days @ 4.77%, unrealized in vault',
+    pnlBase: +0.105948, type: 'pos' as const,
+  },
+  {
+    dateRu: '15 июн 2026', dateEn: 'Jun 15, 2026',
+    nameRu: 'Morpho HY v1.1 открыт (период 2)', nameEn: 'Morpho HY v1.1 reopened (period 2)',
+    descRu: 'Средства из Avantis → bbqUSDC vault @ 8.85% APY',
+    descEn: 'Avantis proceeds → bbqUSDC vault @ 8.85% APY',
+    pnlBase: 0, type: 'open' as const,
+  },
+];
+
+// Active positions — update as portfolio changes
+// allocation: fraction of base $100 capital actually deployed (e.g. $50.106 → 0.50106)
+const POSITIONS = [
+  {
+    nameRu: 'Morpho Prime (steakUSDC)', nameEn: 'Morpho Prime (steakUSDC)',
+    allocation: 0.50106, apy: 0.0477,
+  },
+  {
+    nameRu: 'Morpho HY v1.1 (bbqUSDC)', nameEn: 'Morpho HY v1.1 (bbqUSDC)',
+    allocation: 0.49335, apy: 0.0885,
+  },
+];
+
+const BASE = 100; // USD — all pnlBase values are relative to this
+// ────────────────────────────────────────────────────────────────────────────
+
+function usd(v: number, sign = false): string {
+  const neg = v < 0;
+  const a = Math.abs(v);
+  const s = a >= 10000 ? Math.round(a).toLocaleString('en-US')
+          : a >= 100   ? String(Math.round(a))
+          : a >= 10    ? a.toFixed(1)
+          : a >= 1     ? a.toFixed(2)
+          : a.toFixed(3);
+  return (neg ? '−' : sign ? '+' : '') + '$' + s;
 }
 
 export default function MetricsDashboard() {
-  const { t, language } = useLanguage();
-  const [totalManaged, setTotalManaged] = useState<number>(8421412.50);
-  const [managedAccounts, setManagedAccounts] = useState<number>(1482);
-  const [txCount, setTxCount] = useState<number>(42912);
-  const [liveTxs, setLiveTxs] = useState<MockTx[]>([
-    { id: '1', account: '0x3d4b...f42a', action: 'Rebalance', amount: '8,420 USDC', protocol: 'Fluid USDC', status: 'Confirmed', time: '12s ago' },
-    { id: '2', account: '0xec29...210d', action: 'Yield Compound', amount: '1.42 USDC', protocol: 'Moonwell USDC', status: 'Confirmed', time: '41s ago' },
-    { id: '3', account: '0x791a...dd9a', action: 'Deposit', amount: '12,500 USDC', protocol: 'Morpho Prime', status: 'Confirmed', time: '2m ago' },
-    { id: '4', account: '0x10f3...223e', action: 'Withdraw', amount: '500 USDC', protocol: 'Aave v3', status: 'Confirmed', time: '5m ago' }
-  ]);
+  const { language } = useLanguage();
+  const s = (ru: string, en: string) => language === 'ru' ? ru : en;
 
-  // Simulate on-chain block processing & dynamic metric growth
-  useEffect(() => {
-    const interval = setInterval(() => {
-      // Small randomized compound accrual & transactions
-      const actionRand = Math.random();
-      const numAccs = Math.floor(Math.random() * 3);
-      
-      setTotalManaged((prev) => prev + (actionRand > 0.6 ? Math.random() * 150 : Math.random() * 0.45));
-      if (Math.random() > 0.85) {
-        setManagedAccounts((prev) => prev + 1);
-      }
-      setTxCount((prev) => prev + 1);
+  const [capital, setCapital] = useState(100_000);
 
-      // Add a live tx feed element
-      const accounts = ['0x8e21...01f3', '0x221c...33ed', '0x99fa...6c90', '0x43b0...ff01', '0xade5...42cd'];
-      const actions: ('Deposit' | 'Rebalance' | 'Yield Compound' | 'Withdraw')[] = ['Rebalance', 'Yield Compound', 'Deposit', 'Yield Compound'];
-      const protocols = ['Morpho Gauntlet', 'Moonwell USDC', 'Fluid Vaults', 'Avantis Perps', 'Aerodrome Stable'];
-      
-      const randomAccount = accounts[Math.floor(Math.random() * accounts.length)];
-      const randomAction = actions[Math.floor(Math.random() * actions.length)];
-      const randomProtocol = protocols[Math.floor(Math.random() * protocols.length)];
-      
-      let randomAmount = (Math.random() * 2500 + 50).toLocaleString('en-US', { maximumFractionDigits: 2 });
-      if (randomAction === 'Yield Compound') {
-        randomAmount = (Math.random() * 2.5 + 0.05).toLocaleString('en-US', { maximumFractionDigits: 2 });
-      }
+  const { pnl, dailyYield, breakEvenDays, maxAbsVal } = useMemo(() => {
+    const k = capital / BASE;
+    const totalPnl = EVENTS.reduce((acc, e) => acc + e.pnlBase * k, 0);
+    const daily = POSITIONS.reduce((acc, p) => acc + capital * p.allocation * p.apy / 365, 0);
+    const maxA = Math.max(
+      ...EVENTS.filter(e => e.pnlBase !== 0).map(e => Math.abs(e.pnlBase * k))
+    );
+    return {
+      pnl: totalPnl,
+      dailyYield: daily,
+      breakEvenDays: totalPnl < 0 ? Math.round(Math.abs(totalPnl) / daily) : 0,
+      maxAbsVal: maxA,
+    };
+  }, [capital]);
 
-      const newTx: MockTx = {
-        id: Math.random().toString(),
-        account: randomAccount,
-        action: randomAction,
-        amount: `${randomAmount} USDC`,
-        protocol: randomProtocol,
-        status: 'Confirmed',
-        time: 'Just now'
-      };
-
-      setLiveTxs((prev) => [newTx, ...prev.slice(0, 4)].map((t, idx) => {
-        if (idx === 0) return t;
-        // Age the times slightly
-        if (t.time === 'Just now') return { ...t, time: '11s ago' };
-        if (t.time.includes('s ago')) {
-          const secs = parseInt(t.time) + 12;
-          return { ...t, time: `${secs}s ago` };
-        }
-        return t;
-      }));
-
-    }, 4500);
-
-    return () => clearInterval(interval);
-  }, []);
-
-  const formatTime = (timeStr: string) => {
-    if (timeStr === 'Just now') return t('liveHealth.feed.times.justNow');
-    if (timeStr.includes('s ago')) {
-      return timeStr.replace('s ago', t('liveHealth.feed.times.secondsAgo'));
-    }
-    if (timeStr.includes('m ago')) {
-      return timeStr.replace('m ago', t('liveHealth.feed.times.minutesAgo'));
-    }
-    return timeStr;
-  };
-
-  const actionMap: Record<string, string> = t('liveHealth.feed.actions');
-  const statusMap: Record<string, string> = t('liveHealth.feed.status');
+  const k = capital / BASE;
+  const portfolio = capital + pnl;
 
   return (
-    <div className="space-y-6" id="live-metrics">
-      
-      {/* Grid of 4 main metrics */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        
-        {/* Metric 1 */}
-        <div className="bg-white border border-slate-200 p-4.5 rounded-xl flex flex-col justify-between space-y-2 text-slate-800 relative overflow-hidden group hover:border-slate-300 shadow-tiny transition-all">
-          <div className="absolute top-0 right-0 p-3 text-blue-600 opacity-10">
-            <Database className="w-11 h-11" />
-          </div>
-          <div>
-            <span className="text-[9px] font-bold font-mono text-slate-400 uppercase tracking-widest block">{t('liveHealth.metrics.tvl')}</span>
-            <span className="text-xl font-mono font-bold tracking-tight text-slate-900 block mt-0.5">
-              ${totalManaged.toLocaleString(language === 'ru' ? 'ru-RU' : 'en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-            </span>
-          </div>
-          <span className="text-[10px] text-emerald-700 font-mono flex items-center gap-1 font-semibold">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" /> {t('liveHealth.metrics.tvlSub')}
+    <div className="space-y-4">
+
+      {/* Capital slider */}
+      <div className="bg-slate-50 border border-slate-200 rounded-xl p-5">
+        <div className="flex items-center gap-4 mb-3">
+          <span className="text-[9px] font-mono font-bold text-slate-400 uppercase tracking-widest whitespace-nowrap shrink-0">
+            {s('Стартовый капитал', 'Starting capital')}
+          </span>
+          <input
+            type="range"
+            min={1000}
+            max={1000000}
+            step={1000}
+            value={capital}
+            onChange={e => setCapital(Number(e.target.value))}
+            className="flex-1 accent-blue-600 cursor-pointer"
+          />
+          <span className="text-base font-mono font-bold text-slate-900 min-w-[108px] text-right tabular-nums shrink-0">
+            ${capital.toLocaleString('en-US')}
           </span>
         </div>
-
-        {/* Metric 2 */}
-        <div className="bg-white border border-slate-200 p-4.5 rounded-xl flex flex-col justify-between space-y-2 text-slate-800 relative overflow-hidden group hover:border-slate-300 shadow-tiny transition-all">
-          <div className="absolute top-0 right-0 p-3 text-blue-600 opacity-10">
-            <Users className="w-11 h-11" />
-          </div>
-          <div>
-            <span className="text-[9px] font-bold font-mono text-slate-400 uppercase tracking-widest block">{t('liveHealth.metrics.accounts')}</span>
-            <span className="text-xl font-mono font-bold tracking-tight text-slate-900 block mt-0.5">
-              {managedAccounts.toLocaleString(language === 'ru' ? 'ru-RU' : 'en-US')}
-            </span>
-          </div>
-          <span className="text-[10px] text-slate-500 font-mono font-medium">
-            {t('liveHealth.metrics.accountsSub')}
-          </span>
+        <div className="flex justify-between text-[10px] font-mono text-slate-400 px-0.5">
+          <span>$1K</span><span>$250K</span><span>$500K</span><span>$750K</span><span>$1M</span>
         </div>
-
-        {/* Metric 3 */}
-        <div className="bg-white border border-slate-200 p-4.5 rounded-xl flex flex-col justify-between space-y-2 text-slate-800 relative overflow-hidden group hover:border-slate-300 shadow-tiny transition-all">
-          <div className="absolute top-0 right-0 p-3 text-blue-600 opacity-10">
-            <Activity className="w-11 h-11" />
-          </div>
-          <div>
-            <span className="text-[9px] font-bold font-mono text-slate-400 uppercase tracking-widest block">{t('liveHealth.metrics.apy')}</span>
-            <span className="text-xl font-mono font-bold tracking-tight text-emerald-600 block mt-0.5">
-              8.94%
-            </span>
-          </div>
-          <span className="text-[10px] text-slate-500 font-mono font-medium">
-            {t('liveHealth.metrics.apySub')}
-          </span>
-        </div>
-
-        {/* Metric 4 */}
-        <div className="bg-white border border-slate-200 p-4.5 rounded-xl flex flex-col justify-between space-y-2 text-slate-800 relative overflow-hidden group hover:border-slate-300 shadow-tiny transition-all">
-          <div className="absolute top-0 right-0 p-3 text-blue-600 opacity-10">
-            <ShieldCheck className="w-11 h-11" />
-          </div>
-          <div>
-            <span className="text-[9px] font-bold font-mono text-slate-400 uppercase tracking-widest block">{t('liveHealth.metrics.txs')}</span>
-            <span className="text-xl font-mono font-bold tracking-tight text-slate-900 block mt-0.5">
-              {txCount.toLocaleString(language === 'ru' ? 'ru-RU' : 'en-US')}
-            </span>
-          </div>
-          <span className="text-[10px] text-emerald-700 font-mono flex items-center gap-0.5 font-semibold">
-            <Zap className="w-3 h-3 text-emerald-600 fill-current" /> {t('liveHealth.metrics.txsSub')}
-          </span>
-        </div>
-
       </div>
 
-      {/* Transaction Feed Ledger */}
-      <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-tiny">
-        <div className="flex justify-between items-center pb-4 border-b border-slate-200 mb-4">
-          <div className="space-y-0.5">
-            <h4 className="text-sm font-bold text-slate-900">{t('liveHealth.feed.title')}</h4>
-            <p className="text-xs text-slate-500">{t('liveHealth.feed.subline')}</p>
+      {/* Summary cards */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        {[
+          {
+            label: s('Портфель сейчас', 'Portfolio now'),
+            val: usd(portfolio),
+            cls: 'text-slate-900',
+          },
+          {
+            label: 'DeFi P&L',
+            val: usd(pnl, true),
+            cls: pnl >= 0 ? 'text-emerald-600' : 'text-rose-600',
+          },
+          {
+            label: s('Доход / день', 'Daily yield'),
+            val: usd(dailyYield, true),
+            cls: 'text-emerald-600',
+          },
+          {
+            label: s('До окупаемости', 'Break-even'),
+            val: breakEvenDays > 0 ? `${breakEvenDays} ${s('дн.', 'days')}` : '✓',
+            cls: 'text-slate-700',
+          },
+        ].map((card, i) => (
+          <div
+            key={i}
+            className="bg-white border border-slate-200 p-4.5 rounded-xl flex flex-col justify-between space-y-2 hover:border-slate-300 transition-all"
+          >
+            <span className="text-[9px] font-bold font-mono text-slate-400 uppercase tracking-widest block">
+              {card.label}
+            </span>
+            <span className={`text-xl font-mono font-bold tabular-nums ${card.cls}`}>
+              {card.val}
+            </span>
           </div>
-          <div className="flex items-center gap-1 bg-slate-50 border border-slate-200 px-2.5 py-1 rounded text-[10px] font-mono text-blue-600 font-bold uppercase">
-            <RefreshCw className="w-3 h-3 animate-spin text-blue-600" /> {t('liveHealth.feed.badge')}
-          </div>
-        </div>
+        ))}
+      </div>
 
-        <div className="space-y-2 overflow-x-auto min-w-full">
-          <table className="w-full text-left text-xs text-slate-600 border-collapse">
-            <thead>
-              <tr className="border-b border-slate-200 text-slate-400 uppercase tracking-wider font-semibold text-[9px] font-mono">
-                <th className="py-2.5">{t('liveHealth.feed.headers.account')}</th>
-                <th className="py-2.5">{t('liveHealth.feed.headers.action')}</th>
-                <th className="py-2.5 text-right">{t('liveHealth.feed.headers.volume')}</th>
-                <th className="py-2.5 pl-6">{t('liveHealth.feed.headers.route')}</th>
-                <th className="py-2.5 text-right">{t('liveHealth.feed.headers.status')}</th>
-                <th className="py-2.5 text-right pr-2">{t('liveHealth.feed.headers.age')}</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-100 font-medium">
-              {liveTxs.map((tx) => {
-                let actionColor = 'text-blue-600';
-                if (tx.action === 'Yield Compound') actionColor = 'text-emerald-600';
-                else if (tx.action === 'Withdraw') actionColor = 'text-red-600';
-                
-                return (
-                  <tr key={tx.id} className="hover:bg-slate-50 transition-colors">
-                    <td className="py-2.5 font-mono text-slate-500">{tx.account}</td>
-                    <td className={`py-2.5 font-bold ${actionColor}`}>{actionMap[tx.action] || tx.action}</td>
-                    <td className="py-2.5 font-mono text-right font-bold text-slate-900">{tx.amount}</td>
-                    <td className="py-2.5 text-slate-700 pl-6">{tx.protocol}</td>
-                    <td className="py-2.5 text-right">
-                      <span className="bg-emerald-50 text-emerald-700 border border-emerald-200 px-2.5 py-0.5 rounded text-[9px] font-mono font-bold uppercase">
-                        {statusMap[tx.status] || tx.status}
-                      </span>
-                    </td>
-                    <td className="py-2.5 text-right font-mono text-slate-400 pr-2">{formatTime(tx.time)}</td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+      {/* Event history */}
+      <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-tiny">
+        <div className="flex items-center gap-2 pb-4 border-b border-slate-100 mb-1">
+          <Activity className="w-4 h-4 text-blue-600" />
+          <h4 className="text-sm font-bold text-slate-900">
+            {s('История событий', 'Event history')}
+          </h4>
         </div>
+        <div className="divide-y divide-slate-100">
+          {EVENTS.map((ev, i) => {
+            const val = ev.pnlBase * k;
+            const hasVal = ev.pnlBase !== 0;
+            const barW = hasVal && maxAbsVal > 0
+              ? (Math.abs(val) / maxAbsVal * 100).toFixed(1)
+              : '0';
+            return (
+              <div key={i} className="flex items-start gap-3 py-3 first:pt-3 last:pb-0">
+                <span className="text-[10px] font-mono text-slate-400 w-[86px] shrink-0 pt-0.5 leading-snug">
+                  {language === 'ru' ? ev.dateRu : ev.dateEn}
+                </span>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-semibold text-slate-800 leading-snug">
+                    {language === 'ru' ? ev.nameRu : ev.nameEn}
+                  </p>
+                  <p className="text-xs text-slate-500 mt-0.5 leading-snug">
+                    {language === 'ru' ? ev.descRu : ev.descEn}
+                  </p>
+                  {hasVal && (
+                    <div className="mt-2 h-1 bg-slate-100 rounded-full overflow-hidden max-w-[200px]">
+                      <div
+                        className="h-full rounded-full transition-all duration-300"
+                        style={{
+                          width: `${barW}%`,
+                          backgroundColor: ev.type === 'pos' ? '#16a34a' : '#e11d48',
+                        }}
+                      />
+                    </div>
+                  )}
+                </div>
+                <span className={`text-sm font-mono font-bold tabular-nums shrink-0 pt-0.5 ${
+                  ev.type === 'pos' ? 'text-emerald-600'
+                  : ev.type === 'neg' ? 'text-rose-600'
+                  : 'text-slate-300'
+                }`}>
+                  {hasVal ? usd(val, true) : '—'}
+                </span>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Forward projection */}
+      <div className="grid grid-cols-3 gap-4">
+        {[
+          { label: s('30 дней', '30 days'), val: dailyYield * 30 },
+          { label: s('90 дней', '90 days'), val: dailyYield * 90 },
+          { label: s('1 год', '1 year'),    val: dailyYield * 365 },
+        ].map((card, i) => (
+          <div
+            key={i}
+            className="bg-white border border-slate-200 p-4.5 rounded-xl flex flex-col justify-between space-y-2 hover:border-slate-300 transition-all"
+          >
+            <span className="text-[9px] font-bold font-mono text-slate-400 uppercase tracking-widest block">
+              {card.label}
+            </span>
+            <span className="text-xl font-mono font-bold text-emerald-600 tabular-nums">
+              {usd(card.val, true)}
+            </span>
+          </div>
+        ))}
+      </div>
+
+      {/* Insight note */}
+      <div className="bg-slate-50 border border-slate-100 rounded-xl p-4 text-xs text-slate-600 leading-relaxed">
+        {breakEvenDays > 0 && (
+          <>
+            <span className="font-semibold text-slate-800">
+              {s(`~${breakEvenDays} дн. до окупаемости`, `~${breakEvenDays}-day break-even`)}
+            </span>
+            {s(
+              ' — срок не зависит от суммы вложений: убытки и доходы масштабируются пропорционально. ',
+              ' — capital-invariant: losses and yield scale proportionally. '
+            )}
+          </>
+        )}
+        {s('Активные позиции: ', 'Active positions: ')}
+        {POSITIONS.map((p, i) => (
+          <span key={i}>
+            <span className="font-semibold text-slate-700">
+              {language === 'ru' ? p.nameRu : p.nameEn}
+            </span>
+            {` ${(p.apy * 100).toFixed(2)}%`}
+            {i < POSITIONS.length - 1 ? ' + ' : '. '}
+          </span>
+        ))}
+        {s('Прогноз на год при ', 'Annual yield at ')}
+        <span className="font-semibold text-slate-700">${capital.toLocaleString('en-US')}</span>
+        {': '}
+        <span className="font-semibold text-emerald-700">{usd(dailyYield * 365)}</span>.
       </div>
 
     </div>
