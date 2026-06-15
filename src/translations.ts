@@ -512,7 +512,7 @@ export const translations: Record<'ru' | 'en', TranslationSchema> = {
       principlesSubtitle: 'Чего мы никогда не делаем',
       metricsTitle: 'Матрицы доходности',
       metricsSubtitle: 'Прогноз доходности портфеля',
-      metricsDesc: 'Сколько приносит стартовый капитал в размере $1000 USDC при разных настройках риска?',
+      metricsDesc: 'Сколько приносит пул авто-компаунда в размере $1000 USDC при разных настройках риска?',
       returns: {
         conservative: 'Консервативный портфель',
         conservativeSub: 'Депозиты с кураторством от Gauntlet',
@@ -1102,7 +1102,7 @@ export const translations: Record<'ru' | 'en', TranslationSchema> = {
       principlesSubtitle: 'What we never do',
       metricsTitle: 'Yield Metrics',
       metricsSubtitle: 'Portfolio Return Matrices',
-      metricsDesc: 'How much does a starting allocation of $1,000 USDC earn across different system configurations?',
+      metricsDesc: 'How much does an auto-compound pool allocation of $1,000 USDC earn across different system configurations?',
       returns: {
         conservative: 'Conservative Target',
         conservativeSub: 'Gauntlet Curated vaults',

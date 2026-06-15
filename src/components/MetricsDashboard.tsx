@@ -132,12 +132,12 @@ export default function MetricsDashboard() {
 
       {/* Capital slider */}
       <div className="bg-slate-50 border border-slate-200 rounded-xl p-5">
-        <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 mb-3">
-          <div className="flex justify-between items-center sm:block">
+        <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-4 mb-3">
+          <div className="flex justify-between items-center md:block">
             <span className="text-[9px] font-mono font-bold text-slate-400 uppercase tracking-widest whitespace-nowrap shrink-0">
-              {s('Стартовый капитал', 'Starting capital')}
+              {s('Пул авто-компаунда', 'Auto-Compound Pool')}
             </span>
-            <span className="sm:hidden text-base font-mono font-bold text-slate-900 tabular-nums">
+            <span className="md:hidden text-base font-mono font-bold text-slate-900 tabular-nums">
               ${capital.toLocaleString('en-US')}
             </span>
           </div>
@@ -148,9 +148,9 @@ export default function MetricsDashboard() {
             step={1000}
             value={capital}
             onChange={e => setCapital(Number(e.target.value))}
-            className="w-full sm:flex-1 accent-blue-600 cursor-pointer"
+            className="w-full md:flex-1 accent-blue-600 cursor-pointer"
           />
-          <span className="hidden sm:inline-block text-base font-mono font-bold text-slate-900 min-w-[108px] text-right tabular-nums shrink-0">
+          <span className="hidden md:inline-block text-base font-mono font-bold text-slate-900 min-w-[108px] text-right tabular-nums shrink-0">
             ${capital.toLocaleString('en-US')}
           </span>
         </div>
