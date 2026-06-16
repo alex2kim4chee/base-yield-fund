@@ -29,6 +29,61 @@ import { useLanguage } from './context/LanguageContext';
 
 export default function App() {
   const { t, language, setLanguage } = useLanguage();
+  const [isUS, setIsUS] = useState<boolean>(false);
+
+  React.useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('bypass-geo') === 'true') {
+      return;
+    }
+
+    const cachedCode = sessionStorage.getItem('geo_country_code');
+    if (cachedCode) {
+      if (cachedCode === 'US') {
+        setIsUS(true);
+      }
+      return;
+    }
+
+    const checkGeo = async () => {
+      try {
+        const response = await fetch('https://ipapi.co/json/');
+        if (!response.ok) throw new Error('ipapi failed');
+        const data = await response.json();
+        if (data && data.country_code) {
+          sessionStorage.setItem('geo_country_code', data.country_code);
+          if (data.country_code === 'US') {
+            setIsUS(true);
+          }
+          return;
+        }
+      } catch (e) {
+        console.warn('First geo API failed, trying fallback...', e);
+        try {
+          const fallbackRes = await fetch('https://freeipapi.com/api/json');
+          if (!fallbackRes.ok) throw new Error('freeipapi failed');
+          const data = await fallbackRes.json();
+          if (data && data.countryCode) {
+            sessionStorage.setItem('geo_country_code', data.countryCode);
+            if (data.countryCode === 'US') {
+              setIsUS(true);
+            }
+            return;
+          }
+        } catch (err) {
+          console.error('All geo APIs failed, using timezone fallback', err);
+          const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+          if (tz && (tz.startsWith('US/') || tz === 'America/New_York' || tz === 'America/Chicago' || tz === 'America/Denver' || tz === 'America/Los_Angeles')) {
+            sessionStorage.setItem('geo_country_code', 'US');
+            setIsUS(true);
+          }
+        }
+      }
+    };
+
+    checkGeo();
+  }, []);
 
   // Calculate dynamic header stats from MetricsDashboard source of truth
   const DEFAULT_CAPITAL = 100000;
@@ -103,6 +158,32 @@ export default function App() {
   return (
     <div className="min-h-screen bg-slate-50 text-slate-800 antialiased font-sans selection:bg-blue-600 selection:text-white pb-12 text-left">
       
+      {/* GEOLOCATION BLOCKING OVERLAY */}
+      {isUS && (
+        <div className="fixed inset-0 z-[10000] flex items-center justify-center p-4 bg-slate-950/95 backdrop-blur-xl animate-fade-in text-center select-none">
+          <div className="bg-slate-900 border border-red-500/30 rounded-2xl max-w-lg w-full p-8 space-y-6 shadow-[0_0_50px_rgba(239,68,68,0.15)] relative">
+            <div className="flex flex-col items-center space-y-4">
+              <div className="p-4 rounded-full bg-red-500/10 text-red-500 border border-red-500/20 shadow-[0_0_15px_rgba(239,68,68,0.2)]">
+                <ShieldAlert className="w-12 h-12" />
+              </div>
+              <span className="text-[10px] font-mono tracking-widest text-red-500 uppercase block font-bold">
+                {t('geoblock.badge')}
+              </span>
+              <h2 className="text-2xl font-extrabold text-white leading-tight font-sans">
+                {t('geoblock.title')}
+              </h2>
+              <div className="h-[1px] w-16 bg-red-500/30"></div>
+              <p className="text-sm text-slate-300 font-semibold leading-relaxed font-sans max-w-md">
+                {t('geoblock.desc')}
+              </p>
+            </div>
+            <div className="text-[11px] text-slate-500 font-mono leading-relaxed pt-4 border-t border-slate-800">
+              {t('geoblock.disclaimer')}
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* HEADER NAVBAR */}
       <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200 mx-auto w-full">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">

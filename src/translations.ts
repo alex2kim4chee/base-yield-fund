@@ -393,6 +393,12 @@ export interface TranslationSchema {
   faqs: FAQItem[];
   notDoPrinciples: { title: string; desc: string }[];
   preTradeChecks: string[];
+  geoblock: {
+    title: string;
+    desc: string;
+    badge: string;
+    disclaimer: string;
+  };
 }
 
 export const translations: Record<'ru' | 'en', TranslationSchema> = {
@@ -406,7 +412,7 @@ export const translations: Record<'ru' | 'en', TranslationSchema> = {
       netAvgApy: 'Средняя APY нетто:',
     },
     hero: {
-      tagline: 'Инфраструктура Smart Account от Coinbase',
+      tagline: 'Использование технологии Coinbase Smart Account',
       title1: 'Ваши деньги. Ваш кошелек.',
       title2: 'Автоматизация DeFi-транзакций под вашим контролем.',
       subline: 'Инструментарий ИИ-автоматизации для self-custody исследований в DeFi и подготовки транзакций. Вы лично анализируете данные, контролируете свои ключи и подписываете каждую сделку самостоятельно.',
@@ -414,7 +420,7 @@ export const translations: Record<'ru' | 'en', TranslationSchema> = {
       ctaCalculate: 'Рассчитать доходность APY',
       trustCustody: '100% self-custody',
       trustApproval: 'Одобрение каждой транзакции',
-      trustCoinbase: 'Построено на технологиях Coinbase',
+      trustCoinbase: 'Интегрировано со стеком Coinbase',
     },
     problem: {
       tagline: 'РАЗДЕЛ 01 — ПРОБЛЕМА',
@@ -936,7 +942,7 @@ export const translations: Record<'ru' | 'en', TranslationSchema> = {
     faqs: [
       {
         question: 'Безопасны ли мои деньги?',
-        answer: 'Ваши средства находятся на вашем личном смарт-контракт аккаунте Base Account (ERC-4337) под защитой Coinbase. Доступ третьих лиц к средствам полностью исключен. Любая транзакция, изменение долей или вывод средств требуют вашей личной цифровой подписи (FaceID/TouchID).'
+        answer: 'Ваши средства находятся на вашем личном смарт-контракт аккаунте Base Account (ERC-4337), работающем на базе инфраструктуры Coinbase Smart Wallet. Доступ третьих лиц к средствам полностью исключен. Любая транзакция, изменение долей или вывод средств требуют вашей личной цифровой подписи (FaceID/TouchID).'
       },
       {
         question: 'Что если я захочу забрать свои средства?',
@@ -952,7 +958,7 @@ export const translations: Record<'ru' | 'en', TranslationSchema> = {
       },
       {
         question: 'Нужно ли быть экспертом в DeFi для работы?',
-        answer: 'Совсем нет. Вам понадобится только кошелек Coinbase или любой совместимый Web3-кошелек. Ассистент берет на себя рутину по анализу ставок, подготовке транзакций и комплаенсу. Вы подписываете транзакции лично в один клик.'
+        answer: 'Совсем нет. Вам понадобится только кошелек Coinbase Wallet или любой совместимый Web3-кошелек. Ассистент берет на себя рутину по анализу ставок, подготовке транзакций и комплаенсу. Вы подписываете транзакции лично в один клик.'
       },
       {
         question: 'Как обстоят дела с налогами?',
@@ -984,7 +990,13 @@ export const translations: Record<'ru' | 'en', TranslationSchema> = {
       'Убедиться, что текущая загрузка пула заемщиков ниже критического лимита',
       'Сопоставить комиссию сети с выгодой (ребаланс должен окупать газ менее чем за 3 месяца)',
       'Построить маршрут мгновенного вывода капитала на случай резких изменений рынка'
-    ]
+    ],
+    geoblock: {
+      title: 'Доступ ограничен',
+      desc: 'Программное обеспечение и сервисы автоматизации транзакций Base Yield Agent недоступны для граждан, резидентов или юридических лиц Соединенных Штатов Америки (США).',
+      badge: 'ОГРАНИЧЕНИЕ ПО ГЕОЛОКАЦИИ',
+      disclaimer: '*Если вы считаете, что это ошибка, пожалуйста, отключите VPN или обратитесь в поддержку по адресу hello@baseyieldfund.com.',
+    }
   },
   en: {
     nav: {
@@ -996,7 +1008,7 @@ export const translations: Record<'ru' | 'en', TranslationSchema> = {
       netAvgApy: 'Net Avg APY:',
     },
     hero: {
-      tagline: 'Coinbase Smart Account Infrastructure',
+      tagline: 'Powered by Coinbase Smart Account Infrastructure',
       title1: 'Your money. Your account.',
       title2: 'DeFi automation under your control.',
       subline: 'AI automation toolkit for self-custody DeFi research and transaction preparation on Base L2. Keep 100% custody: the agent prepares drafts, you sign every transaction.',
@@ -1004,7 +1016,7 @@ export const translations: Record<'ru' | 'en', TranslationSchema> = {
       ctaCalculate: 'Estimate APY Returns',
       trustCustody: '100% self-custody',
       trustApproval: 'TouchID/FaceID signing',
-      trustCoinbase: 'Built on Coinbase Stack',
+      trustCoinbase: 'Integrated with Coinbase Stack',
     },
     problem: {
       tagline: 'SECTION 01 — THE PROBLEM',
@@ -1526,7 +1538,7 @@ export const translations: Record<'ru' | 'en', TranslationSchema> = {
     faqs: [
       {
         question: 'Is my money safe?',
-        answer: 'Your funds remain in your Base Account — a Coinbase-secured smart contract wallet (ERC-4337). Direct custody of funds by any third party is completely excluded. Every transaction, allocation shift, or withdrawal requires your explicit cryptographically signed approval.'
+        answer: 'Your funds remain in your Base Account — a smart contract wallet (ERC-4337) utilizing Coinbase Smart Wallet infrastructure. Direct custody of funds by any third party is completely excluded. Every transaction, allocation shift, or withdrawal requires your explicit cryptographically signed approval.'
       },
       {
         question: 'What if I want to stop and withdraw?',
@@ -1542,7 +1554,7 @@ export const translations: Record<'ru' | 'en', TranslationSchema> = {
       },
       {
         question: 'Do I need to be a DeFi expert or have on-chain experience?',
-        answer: 'Not at all. You only need a Coinbase account or compatible smart wallet app. The assistant dashboard prepares the transaction drafts, performs checks, and simplifies the technical workflow; you just sign recommendations with FaceID/TouchID.'
+        answer: 'Not at all. You only need a Coinbase Wallet or compatible smart wallet app. The assistant dashboard prepares the transaction drafts, performs checks, and simplifies the technical workflow; you just sign recommendations with FaceID/TouchID.'
       },
       {
         question: 'How are taxes handled?',
@@ -1574,6 +1586,12 @@ export const translations: Record<'ru' | 'en', TranslationSchema> = {
       'Ensure current utilization rate stays below critical exit-liquidation thresholds',
       'Project exact transaction gas relative to expected daily yield delta (rebalance must cover gas in <3 months)',
       'Map exit routing strategy and buffer dynamic protocol exit queues'
-    ]
+    ],
+    geoblock: {
+      title: 'Access Restricted',
+      desc: 'The Base Yield Agent software and transaction automation tools are not available to citizens, residents, or entities of the United States of America (USA).',
+      badge: 'GEOLOCATION RESTRICTION',
+      disclaimer: '*If you believe this is an error, please disable your VPN/proxy or contact support at hello@baseyieldfund.com.',
+    }
   }
 };

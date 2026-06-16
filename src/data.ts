@@ -131,7 +131,7 @@ export const RISK_PROFILES: Record<string, RiskProfileData> = {
 export const FAQS: FAQItem[] = [
   {
     question: 'Is my money safe?',
-    answer: 'Your funds remain in your Base Account — a Coinbase-secured smart contract wallet (ERC-4337). We never have direct custody of your funds. Every transaction, allocation shift, or withdrawal requires your explicit cryptographically signed approval.'
+    answer: 'Your funds remain in your Base Account — a smart contract wallet (ERC-4337) utilizing Coinbase Smart Wallet infrastructure. We never have direct custody of your funds. Every transaction, allocation shift, or withdrawal requires your explicit cryptographically signed approval.'
   },
   {
     question: 'What if I want to stop and withdraw?',
@@ -147,7 +147,7 @@ export const FAQS: FAQItem[] = [
   },
   {
     question: 'Do I need to be a DeFi expert or have on-chain experience?',
-    answer: 'Not at all. You only need a Coinbase account or compatible smart wallet app. Our dashboard prepares the transaction calldata, performs on-chain scans, and does the complex heavy lifting; you just approve recommendations with one tap.'
+    answer: 'Not at all. You only need a Coinbase Wallet or compatible smart wallet app. Our dashboard prepares the transaction calldata, performs on-chain scans, and does the complex heavy lifting; you just approve recommendations with one tap.'
   },
   {
     question: 'How are taxes handled?',
