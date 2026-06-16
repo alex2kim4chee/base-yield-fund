@@ -88,18 +88,18 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode; initialLang
     // 2. Set dynamic translations for SEO elements
     const seoData = {
       ru: {
-        title: 'Base Yield Fund | DeFi-доходность институционального уровня',
-        description: 'Автоматизированное управление и оптимизация стейблкоинов USDC в сети Base. Сохраняйте 100% контроль над своими средствами на личном кошельке и получайте доход до 40% APY.',
-        keywords: 'Base, DeFi, USDC, доходность, стейблкоины, Coinbase, Smart Account, Yield Aggregator, пассивный доход, криптовалюта',
-        ogTitle: 'Base Yield Fund | DeFi-доходность под вашим контролем',
-        ogDesc: 'Автоматизированное управление и оптимизация стейблкоинов USDC в сети Base. Получайте до 40% APY на личном кошельке под 100% контролем.',
+        title: 'Base Yield Agent | Автоматизация DeFi-транзакций с self-custody',
+        description: 'ИИ-ассистент для DeFi-автоматизации и подготовки транзакций в сети Base. Сохраняйте 100% контроль над кошельком: ассистент предлагает действия, вы лично подписываете каждую сделку самостоятельно.',
+        keywords: 'Base, DeFi, USDC, автоматизация, ассистент, стейблкоины, Coinbase, Smart Account, ИИ, транзакции, криптовалюта',
+        ogTitle: 'Base Yield Agent | DeFi-автоматизация под вашим контролем',
+        ogDesc: 'ИИ-ассистент для DeFi-автоматизации и подготовки транзакций в сети Base. Получайте рекомендации, контролируйте свои ключи и подписывайте транзакции сами.',
       },
       en: {
-        title: 'Base Yield Fund | Institutional-Grade DeFi Yield Aggregator',
-        description: 'Automated management and optimization of USDC stablecoins on the Base network. Keep 100% self-custody of your capital on-chain while capturing up to 40% APY.',
-        keywords: 'Base, DeFi, USDC, yield, stablecoins, Coinbase, Smart Account, Yield Aggregator, passive income, cryptocurrency',
-        ogTitle: 'Base Yield Fund | Self-Custodial DeFi Yield Platform',
-        ogDesc: 'Automated optimization of USDC stablecoins on the Base network. Keep 100% self-custody of your capital on-chain while capturing up to 40% APY.',
+        title: 'Base Yield Agent | Self-Custodial DeFi Automation Assistant',
+        description: 'AI automation assistant for self-custody DeFi research and transaction preparation on Base L2. Keep 100% custody: the agent prepares drafts, you sign every transaction.',
+        keywords: 'Base, DeFi, USDC, yield, stablecoins, Coinbase, Smart Account, AI, agent, transaction, cryptocurrency',
+        ogTitle: 'Base Yield Agent | Self-Custodial DeFi Automation',
+        ogDesc: 'AI automation assistant for self-custody DeFi research and transaction preparation on Base L2. Keep 100% custody: the agent prepares drafts, you sign every transaction.',
       }
     };
 

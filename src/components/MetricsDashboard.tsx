@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { Activity } from 'lucide-react';
+import { Activity, Info } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 
 // ─── PORTFOLIO DATA (update as strategy evolves) ────────────────────────────
@@ -130,12 +130,26 @@ export default function MetricsDashboard() {
   return (
     <div className="space-y-4">
 
+      {/* Demo Account Disclosure */}
+      <div className="bg-blue-50 border border-blue-200/60 rounded-xl p-4.5 text-xs text-blue-800 leading-relaxed flex items-start gap-3 shadow-tiny text-left">
+        <Info className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" />
+        <div>
+          <span className="font-bold block mb-1">
+            {s('Предупреждение о демо-счете', 'Demo Account Disclosure')}
+          </span>
+          {s(
+            'Данный кошелек контролируется компанией. Никакие средства клиентов не используются. Это техническая демонстрация работы агента, а не реклама доходности.',
+            'This wallet is controlled by the company. No customer funds are included. This is a technical demonstration of agent behavior, not a performance advertisement.'
+          )}
+        </div>
+      </div>
+
       {/* Capital slider */}
       <div className="bg-slate-50 border border-slate-200 rounded-xl p-5">
         <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-4 mb-3">
           <div className="flex justify-between items-center md:block">
             <span className="text-[9px] font-mono font-bold text-slate-400 uppercase tracking-widest whitespace-nowrap shrink-0">
-              {s('Пул авто-компаунда', 'Auto-Compound Pool')}
+              {s('Демо-кошелек: тестовый баланс', 'Public Demo Wallet: Simulation Balance')}
             </span>
             <span className="md:hidden text-base font-mono font-bold text-slate-900 tabular-nums">
               ${capital.toLocaleString('en-US')}
@@ -171,7 +185,7 @@ export default function MetricsDashboard() {
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[
           {
-            label: s('Портфель сейчас', 'Portfolio now'),
+            label: s('Баланс демо-кошелька', 'Demo Wallet Balance'),
             val: usd(portfolio),
             cls: 'text-slate-900',
           },
@@ -186,7 +200,7 @@ export default function MetricsDashboard() {
             cls: 'text-emerald-600',
           },
           {
-            label: s('До окупаемости', 'Break-even'),
+            label: s('Период покрытия комиссий', 'Fee Coverage Period'),
             val: breakEvenDays > 0 ? `${breakEvenDays} ${s('дн.', 'days')}` : '✓',
             cls: 'text-slate-700',
           },
@@ -210,7 +224,7 @@ export default function MetricsDashboard() {
         <div className="flex items-center gap-2 pb-4 border-b border-slate-100 mb-1">
           <Activity className="w-4 h-4 text-blue-600" />
           <h4 className="text-sm font-bold text-slate-900">
-            {s('История событий', 'Event history')}
+            {s('Журнал аудита транзакций', 'Transaction Audit Log')}
           </h4>
         </div>
         <div className="divide-y divide-slate-100">
@@ -278,12 +292,20 @@ export default function MetricsDashboard() {
         ))}
       </div>
 
+      {/* Warning notice */}
+      <div className="text-[10px] font-mono text-slate-400 mt-1 leading-normal text-left">
+        {s(
+          '*Сценарий оценки на основе текущих плавающих ставок протокола. Не является прогнозом доходности. Не учитывает риски изменения ставок, смарт-контрактов и другие системные риски.',
+          '*Scenario estimate based on current protocol-reported variable rates. Not a forecast of expected user returns. Does not account for rate volatility or contract risks.'
+        )}
+      </div>
+
       {/* Insight note */}
-      <div className="bg-slate-50 border border-slate-100 rounded-xl p-4 text-xs text-slate-600 leading-relaxed">
+      <div className="bg-slate-50 border border-slate-100 rounded-xl p-4 text-xs text-slate-600 leading-relaxed text-left">
         {breakEvenDays > 0 && (
           <>
             <span className="font-semibold text-slate-800">
-              {s(`~${breakEvenDays} дн. до окупаемости`, `~${breakEvenDays}-day break-even`)}
+              {s(`~${breakEvenDays} дн. покрытия комиссий`, `~${breakEvenDays}-day fee coverage`)}
             </span>
             {s(
               ' — срок не зависит от суммы вложений: убытки и доходы масштабируются пропорционально. ',

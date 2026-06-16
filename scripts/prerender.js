@@ -43,12 +43,12 @@ async function run() {
   );
   htmlEn = htmlEn.replace('<html lang="ru">', '<html lang="en">');
   htmlEn = htmlEn.replace(
-    '<title>Base Yield Fund | DeFi-доходность институционального уровня</title>',
-    '<title>Base Yield Fund | Institutional-Grade DeFi Yield Aggregator</title>'
+    '<title>Base Yield Agent | Автоматизация DeFi-транзакций с self-custody</title>',
+    '<title>Base Yield Agent | Self-Custodial DeFi Automation Assistant</title>'
   );
   htmlEn = htmlEn.replace(
-    'content="Автоматизированное управление и оптимизация стейблкоинов USDC в сети Base. Сохраняйте 100% контроль над своими средствами на личном кошельке и получайте доход до 40% APY."',
-    'content="Automated management and optimization of USDC stablecoins on the Base network. Keep 100% self-custody of your capital on-chain while capturing up to 40% APY."'
+    'content="ИИ-ассистент для DeFi-автоматизации и подготовки транзакций в сети Base. Сохраняйте 100% контроль над кошельком: ассистент предлагает действия, вы лично подписываете каждую сделку самостоятельно."',
+    'content="AI automation assistant for self-custody DeFi research and transaction preparation on Base L2. Keep 100% custody: the agent prepares drafts, you sign every transaction."'
   );
 
   // Write English version to dist/en/index.html

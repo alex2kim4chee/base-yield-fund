@@ -61,19 +61,19 @@ export default function App() {
   };
 
   const accessMailto = `mailto:hello@baseyieldfund.com?subject=${encodeURIComponent(
-    language === 'ru' ? 'Запрос доступа в Base Yield Fund' : 'Access Request - Base Yield Fund'
+    language === 'ru' ? 'Запрос доступа к ИИ-ассистенту Base Yield Agent' : 'AI Software Access Request - Base Yield Agent'
   )}&body=${encodeURIComponent(
     language === 'ru'
-      ? 'Здравствуйте!\n\nЯ бы хотел подать заявку на ранний доступ к стратегиям Base Yield Fund.\n\nПланируемый объем депозита: $______ USDC (минимальный порог от $1,000).\n\nС уважением,'
-      : 'Hello!\n\nI would like to apply for early access to the Base Yield Fund strategies.\n\nPlanned deposit size: $______ USDC (minimum entry size of $1,000).\n\nRegards,'
+      ? 'Здравствуйте!\n\nЯ бы хотел подать заявку на ранний доступ к ИИ-ассистенту Base Yield Agent.\n\nПланируемый размер транзакционного баланса: $______ USDC (минимальный порог симуляции от $1,000).\n\nС уважением,'
+      : 'Hello!\n\nI would like to apply for early access to the Base Yield Agent AI software.\n\nPlanned transaction balance: $______ USDC (minimum simulation size of $1,000).\n\nRegards,'
   )}`;
 
   const reportMailto = `mailto:report@baseyieldfund.com?subject=${encodeURIComponent(
-    language === 'ru' ? 'Запрос отчета по позициям Base Yield Fund' : 'Position Report Request - Base Yield Fund'
+    language === 'ru' ? 'Запрос отчета по демо-кошельку Base Yield Agent' : 'Demo Wallet Report Request - Base Yield Agent'
   )}&body=${encodeURIComponent(
     language === 'ru'
-      ? 'Здравствуйте!\n\nПрошу предоставить актуальный детальный отчет по текущим DeFi-позициям, начисленной доходности и ребалансировкам.\n\nС уважением,'
-      : 'Hello!\n\nPlease provide the latest detailed report on current DeFi allocations, yields, and system rebalances.\n\nRegards,'
+      ? 'Здравствуйте!\n\nПрошу предоставить детальный отчет по текущим позициям демо-кошелька и логам ребалансировки ИИ.\n\nС уважением,'
+      : 'Hello!\n\nPlease provide the latest report on active demo wallet allocations and AI rebalance logs.\n\nRegards,'
   )}`;
 
   // Tech items list pulled dynamically based on translation keys

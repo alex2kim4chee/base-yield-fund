@@ -1,6 +1,6 @@
 {
-  "name": "Base Yield Fund",
-  "description": "An AI-assisted DeFi yield strategy on Base blockchain, enabling 4–40% APY under full self-custody.",
+  "name": "Base Yield Agent",
+  "description": "An AI-assisted DeFi transaction preparation assistant on Base blockchain under full self-custody.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }
