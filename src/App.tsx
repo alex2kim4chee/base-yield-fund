@@ -38,10 +38,32 @@ export default function App() {
       return;
     }
 
+    // 1. Timezone Check (Blocks US residents even if they use a VPN)
+    const US_TIMEZONES = /^(US\/|America\/(New_York|Chicago|Denver|Los_Angeles|Phoenix|Anchorage|Honolulu|Adak|Boise|Detroit|Menominee|Metlakatla|Juneau|Sitka|Yakutat|Nome|Indiana\/|Kentucky\/|North_Dakota\/))/;
+    const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    const isUSTimezone = tz && US_TIMEZONES.test(tz);
+
+    if (isUSTimezone) {
+      setIsUS(true);
+      return;
+    }
+
+    // 2. Cache check
     const cachedCode = sessionStorage.getItem('geo_country_code');
+    const cachedOrg = sessionStorage.getItem('geo_org');
+
     if (cachedCode) {
       if (cachedCode === 'US') {
         setIsUS(true);
+        return;
+      }
+      if (cachedOrg) {
+        const DATACENTER_ORGS = ['m247', 'hetzner', 'digitalocean', 'ovh', 'linode', 'leaseweb', 'nordvpn', 'expressvpn', 'surfshark', 'datacamp', 'vultr', 'choopa', 'colocrossing', 'google', 'amazon', 'microsoft'];
+        const isDatacenter = DATACENTER_ORGS.some(keyword => cachedOrg.toLowerCase().includes(keyword));
+        if (isDatacenter) {
+          setIsUS(true);
+          return;
+        }
       }
       return;
     }
@@ -51,9 +73,16 @@ export default function App() {
         const response = await fetch('https://ipapi.co/json/');
         if (!response.ok) throw new Error('ipapi failed');
         const data = await response.json();
-        if (data && data.country_code) {
-          sessionStorage.setItem('geo_country_code', data.country_code);
-          if (data.country_code === 'US') {
+        if (data) {
+          const country = data.country_code || '';
+          const org = data.org || '';
+          sessionStorage.setItem('geo_country_code', country);
+          sessionStorage.setItem('geo_org', org);
+
+          const DATACENTER_ORGS = ['m247', 'hetzner', 'digitalocean', 'ovh', 'linode', 'leaseweb', 'nordvpn', 'expressvpn', 'surfshark', 'datacamp', 'vultr', 'choopa', 'colocrossing', 'google', 'amazon', 'microsoft'];
+          const isDatacenter = org && DATACENTER_ORGS.some(keyword => org.toLowerCase().includes(keyword));
+
+          if (country === 'US' || isDatacenter) {
             setIsUS(true);
           }
           return;
@@ -64,20 +93,22 @@ export default function App() {
           const fallbackRes = await fetch('https://freeipapi.com/api/json');
           if (!fallbackRes.ok) throw new Error('freeipapi failed');
           const data = await fallbackRes.json();
-          if (data && data.countryCode) {
-            sessionStorage.setItem('geo_country_code', data.countryCode);
-            if (data.countryCode === 'US') {
+          if (data) {
+            const country = data.countryCode || '';
+            const org = data.org || data.asnOrg || '';
+            sessionStorage.setItem('geo_country_code', country);
+            sessionStorage.setItem('geo_org', org);
+
+            const DATACENTER_ORGS = ['m247', 'hetzner', 'digitalocean', 'ovh', 'linode', 'leaseweb', 'nordvpn', 'expressvpn', 'surfshark', 'datacamp', 'vultr', 'choopa', 'colocrossing', 'google', 'amazon', 'microsoft'];
+            const isDatacenter = org && DATACENTER_ORGS.some(keyword => org.toLowerCase().includes(keyword));
+
+            if (country === 'US' || isDatacenter) {
               setIsUS(true);
             }
             return;
           }
         } catch (err) {
           console.error('All geo APIs failed, using timezone fallback', err);
-          const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
-          if (tz && (tz.startsWith('US/') || tz === 'America/New_York' || tz === 'America/Chicago' || tz === 'America/Denver' || tz === 'America/Los_Angeles')) {
-            sessionStorage.setItem('geo_country_code', 'US');
-            setIsUS(true);
-          }
         }
       }
     };
