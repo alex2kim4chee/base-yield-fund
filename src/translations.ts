@@ -429,7 +429,7 @@ export const translations: Record<'ru' | 'en', TranslationSchema> = {
       riskDesc: 'Регулярная оценка лимитов платежеспособности протоколов, уровня "плохих долгов" и залога.',
       mathTitle: 'Создание транзакций',
       mathDesc: 'Написание сложных смарт-контрактов для вызовов функций с целью экономии на сетевых комиссиях.',
-      quote: '«Мы автоматизировали все это. Ассистент готовит транзакции, вы их подтверждаете».',
+      quote: '«Все процессы автоматизированы. Ассистент готовит транзакции, вы их подтверждаете».',
       badge: 'СРАВНЕНИЕ APY',
       compareTitle: 'Разница процентных ставок',
       compareDesc: 'Сравнение обычного долларового счета и позиций в Base.',
@@ -439,15 +439,15 @@ export const translations: Record<'ru' | 'en', TranslationSchema> = {
       deltaText: 'Каждые $1000 на обычном депозите приносят около $5 в год. Размещенный в Base, тот же доллар приносит до $250 ожидаемого дохода.',
     },
     whatWeDo: {
-      tagline: 'РАЗДЕЛ 02 — ЧЕМ МЫ ЗАНИМАЕМСЯ',
+      tagline: 'РАЗДЕЛ 02 — КАК ЭТО РАБОТАЕТ',
       title: 'Умная DeFi-автоматизация. Анализируется ИИ. Контролируется вами.',
-      subline: 'Мы помогаем автоматизировать работу с вашим Base-аккаунтом — удобной оболочкой для смарт-кошелька от Coinbase. Ассистент только предлагает черновики транзакций; вы никогда не передаете свои ключи третьим лицам.',
+      subline: 'ИИ-ассистент помогает автоматизировать работу со Smart Account — удобной оболочкой для смарт-кошелька от Coinbase. Ассистент только предлагает черновики транзакций; вы никогда не передаете свои ключи третьим лицам.',
       step1Title: 'Создание аккаунта',
       step1Desc: 'Занимает всего 2 минуты. Работает полностью на базе биометрических passkey-ключей от Coinbase.',
       step2Title: 'Депозит стейблкоинов',
       step2Desc: 'Пополнение баланса в USDC — ведущем регулируемом стейблкоине США, обеспеченном 1:1 к доллару.',
       step3Title: 'Постоянный анализ',
-      step3Desc: 'Наш ИИ-агент сканирует рыночные показатели в пулах ликвидности и кредитования (Morpho, Moonwell, Fluid, Aerodrome, Avantis).',
+      step3Desc: 'ИИ-агент сканирует рыночные показатели в пулах ликвидности и кредитования (Morpho, Moonwell, Fluid, Aerodrome, Avantis).',
       step4Title: 'Подготовка транзакций',
       step4Desc: 'Агент готовит черновик транзакции с точным расчетом сетевого газа, параметров проскальзывания и рисков.',
       step5Title: 'Личное подписание',
@@ -459,7 +459,7 @@ export const translations: Record<'ru' | 'en', TranslationSchema> = {
     tech: {
       tagline: 'РАЗДЕЛ 03 — ТЕХНОЛОГИЧЕСКИЙ СТЕК',
       title: 'Построено на базе инфраструктуры ведущих DeFi-фондов.',
-      subline: 'Мы работаем напрямую с проверенными, открытыми и прошедшими аудит протоколами. Выберите любой элемент стека, чтобы изучить его параметры.',
+      subline: 'Интеграция осуществляется напрямую с проверенными, открытыми и прошедшими аудит протоколами. Выберите любой элемент стека, чтобы изучить его параметры.',
       cornerBadge: 'ИД_СТЕКА: ',
       activeSpecs: 'АКТИВНЫЕ ХАРАКТЕРИСТИКИ',
       bottomNote: 'Вся логика открыта и верифицирована на GitHub. Вы можете проверить хэши компилятора в любой момент самостоятельно.',
@@ -508,7 +508,7 @@ export const translations: Record<'ru' | 'en', TranslationSchema> = {
         liveNote: '*Ставки APY подтягиваются в реальном времени. Прошлые результаты не гарантируют будущую доходность.',
       },
       principlesTitle: 'Меры безопасности',
-      principlesSubtitle: 'Чего мы никогда не делаем',
+      principlesSubtitle: 'Защитные ограничения ИИ',
       metricsTitle: 'Матрицы доходности',
       metricsSubtitle: 'Симуляция доходности по сценарию',
       metricsDesc: 'Сколько приносит симуляция баланса в размере $1000 USDC при разных настройках риска на основе текущих плавающих ставок?',
@@ -526,10 +526,10 @@ export const translations: Record<'ru' | 'en', TranslationSchema> = {
     whoThisIsFor: {
       tagline: 'РАЗДЕЛ 05 — СВОБОДНЫЕ СБЕРЕЖЕНИЯ',
       title: 'Создано для людей, которые решили владеть своими деньгами лично, а не через банк.',
-      subline: 'Вам не обязательно скептически относиться к традиционным банкам, чтобы быть здесь. Но если вы хотите полный контроль — вы в правильном месте. Наше правило: самые безопасные сбережения — это те, к которым ни один посредник не имеет доступа.',
+      subline: 'Вам не обязательно скептически относиться к традиционным банкам, чтобы быть здесь. Но если вы хотите полный контроль — вы в правильном месте. Правило self-custody: самые безопасные сбережения — это те, к которым ни один посредник не имеет доступа.',
       convictions: {
         c1Title: 'Нестабильность локальных систем',
-        c1Desc: 'Видели заморозки счетов, девальвацию валют за одну ночь или ограничения на снятие? Мы даем альтернативный путь.',
+        c1Desc: 'Видели заморозки счетов, девальвацию валют за одну ночь или ограничения на снятие? DeFi-автоматизация предлагает альтернативный путь.',
         c2Title: 'Финансовый суверенитет',
         c2Desc: 'Ваши доллары должны работать на вас, а не лежать на счетах банков, которые могут ограничить доступ к ним по своему усмотрению.',
         c3Title: 'Глобальный DeFi доход',
@@ -564,7 +564,7 @@ export const translations: Record<'ru' | 'en', TranslationSchema> = {
       compliance: {
         tagline: 'АУДИТ ПРОТОКОЛОВ',
         title: 'Комплаенс-проверка перед сделкой',
-        subline: 'Перед формированием любой рекомендации по ребалансировке наша система проводит валидацию по всем параметрам безопасности.',
+        subline: 'Перед формированием любой рекомендации по ребалансировке алгоритмы ИИ проводят автоматическую валидацию по всем параметрам безопасности.',
         badge: 'СТАТУС БЕЗОПАСНОСТИ: ',
       },
       safeguards: {
@@ -573,16 +573,16 @@ export const translations: Record<'ru' | 'en', TranslationSchema> = {
         riskBoundsTitle: 'Лимиты риска по уровням',
         riskBoundsDesc: 'Консервативные стратегии активны по умолчанию. Переход в высокодоходные пулы требует вашего явного согласия.',
         gasBufferTitle: 'Буфер для оплаты газа',
-        gasBufferDesc: 'Мы держим небольшой запас Ethereum (ETH) на вашем счету для быстрой оплаты комиссий при выводе средств.',
+        gasBufferDesc: 'На смарт-аккаунте рекомендуется сохранять небольшой запас Ethereum (ETH) для быстрой оплаты комиссий при выводе средств.',
         noAutoTitle: 'Никаких авто-списаний',
         noAutoDesc: 'Агент готовит транзакцию и объясняет риски, но только ваше физическое TouchID/FaceID подписание отправляет ее в сеть.',
-        bottomNote: '*Мы никогда не спрашиваем, откуда вы. И не проверяем, зачем вам нужен контроль над вашими деньгами. Это ваше суверенное право.',
+        bottomNote: '*Географические ограничения отсутствуют. Цели управления личными средствами не проверяются. Финансовый контроль является неотъемлемым суверенным правом пользователя.',
       },
     },
     transparency: {
       tagline: 'РАЗДЕЛ 06 — ПРОЗРАЧНОСТЬ',
       title: 'Каждая цифра проверяется. Ончейн. Любым человеком.',
-      subline: 'В отличие от классических закрытых офшорных фондов, у нас нет секретов. Любую операцию можно проверить через публичные обозреватели блоков.',
+      subline: 'В отличие от классических закрытых офшорных фондов, здесь все данные открыты. Любую операцию можно проверить через публичные ончейн-обозреватели блоков.',
       c1Title: 'Интеграция с BaseScan',
       c1Desc: 'Каждое начисление процентов, перераспределение средств и ребалансировка видны по адресу вашего кошелька на basescan.org.',
       c2Title: 'Прямая сверка с DeFi-протоколами',
@@ -641,12 +641,12 @@ export const translations: Record<'ru' | 'en', TranslationSchema> = {
     faq: {
       tagline: 'РАЗДЕЛ 09 — ВОПРОСЫ И ОТВЕТЫ',
       title: 'Часто задаваемые вопросы',
-      subline: 'Мы стремимся к полной прозрачности. Если у вас есть другие вопросы, вы можете задать их в наших ончейн-каналах.',
+      subline: 'Приоритетом является полная прозрачность. Если у вас есть другие вопросы, вы можете задать их в публичных ончейн-сообществах.',
     },
     liveHealth: {
       tagline: 'РАЗДЕЛ 10 — ЖУРНАЛ РАБОТЫ ИИ',
       title: 'Публичный демо-кошелек: журнал работы ИИ-агента',
-      subline: 'Ниже приведен технический пример того, как агент анализирует DeFi-данные и готовит транзакции. Этот демо-кошелек контролируется нашей командой, не содержит средств клиентов и не является обещанием доходности.',
+      subline: 'Ниже приведен технический пример того, как агент анализирует DeFi-данные и готовит транзакции. Данный демо-кошелек является техническим, не содержит средств клиентов и не является обещанием доходности.',
       demoDisclosure: 'Предупреждение о демо-счете: Данный кошелек контролируется компанией. Никакие средства клиентов не используются. Это техническая демонстрация работы агента, а не реклама доходности.',
       metrics: {
         tvl: 'ТЕСТОВЫЙ СЦЕНАРИЙ ДЕМО-КОШЕЛЬКА',
@@ -706,7 +706,7 @@ export const translations: Record<'ru' | 'en', TranslationSchema> = {
       reportTitle: 'Запрос отчета по позициям',
       reportDesc: 'Запросить детальный отчет по текущим позициям демо-кошелька, начисленной доходности и ребалансировкам ИИ.',
       reportBtn: 'Запросить отчет в report@baseyieldfund.com',
-      legalNote: '*Шаблон письма будет открыт в вашем почтовом клиенте. Мы никогда не запрашиваем сид-фразы, приватные ключи или пароли.',
+      legalNote: '*Шаблон письма будет открыт в вашем почтовом клиенте. Запросы сид-фраз, приватных ключей или паролей полностью исключены.',
     },
     calculator: {
       badge: 'РАСЧЕТ ДОХОДНОСТИ',
@@ -936,15 +936,15 @@ export const translations: Record<'ru' | 'en', TranslationSchema> = {
     faqs: [
       {
         question: 'Безопасны ли мои деньги?',
-        answer: 'Ваши средства находятся на вашем личном смарт-контракт аккаунте Base Account (ERC-4337) под защитой Coinbase. Мы не имеем доступа к вашим средствам. Любая транзакция, изменение долей или вывод средств требуют вашей личной цифровой подписи (FaceID/TouchID).'
+        answer: 'Ваши средства находятся на вашем личном смарт-контракт аккаунте Base Account (ERC-4337) под защитой Coinbase. Доступ третьих лиц к средствам полностью исключен. Любая транзакция, изменение долей или вывод средств требуют вашей личной цифровой подписи (FaceID/TouchID).'
       },
       {
         question: 'Что если я захочу забрать свои средства?',
-        answer: 'Вы можете вывести средства в любой момент. У нас нет блокировок или штрафов за досрочный вывод. Вывод из Morpho и Moonwell на ваш основной кошелек обычно занимает не более пары минут. В периоды редких пиковых нагрузок на кредитных рынках вывод может занять чуть больше времени, поэтому мы держим буфер ликвидности.'
+        answer: 'Вы можете вывести средства в любой момент. Блокировки или штрафы за досрочный вывод отсутствуют. Вывод из Morpho и Moonwell на основной кошелек обычно занимает не более пары минут. В периоды редких пиковых нагрузок на кредитных рынках вывод может занять чуть больше времени, поэтому на смарт-аккаунте рекомендуется сохранять буфер ликвидности.'
       },
       {
         question: 'Каковы комиссии сервиса?',
-        answer: 'Базовые DeFi-протоколы (такие как Morpho и Moonwell) взимают собственные комиссии за управление (0-15%) с генерируемого дохода, которые уже вычтены из отображаемых ставок APY. Наша платформа удерживает небольшую комиссию только с фактически полученной вами чистой прибыли.'
+        answer: 'Базовые DeFi-протоколы (такие как Morpho и Moonwell) взимают собственные комиссии за управление (0-15%) с генерируемого дохода, которые уже вычтены из отображаемых ставок APY. Интерфейс платформы удерживает небольшую комиссию только с фактически полученной чистой прибыли.'
       },
       {
         question: 'Каковы ключевые риски инвестирования?',
@@ -966,7 +966,7 @@ export const translations: Record<'ru' | 'en', TranslationSchema> = {
       },
       {
         title: 'Без мем-токенов и сомнительных контрактов',
-        desc: 'Мы работаем исключительно со стабильными монетами (stablecoins) в проверенных временем пулах с прозрачной историей.'
+        desc: 'Используются исключительно стабильные монеты (stablecoins) в проверенных временем пулах с прозрачной историей.'
       },
       {
         title: 'Никаких слепых входов под запредельные APY',
@@ -1019,7 +1019,7 @@ export const translations: Record<'ru' | 'en', TranslationSchema> = {
       riskDesc: 'Evaluating lock solvency caps, bad debt ratios, and dynamic collateral levels.',
       mathTitle: 'Tx Construction',
       mathDesc: 'Crafting exact batch smart contracts and routing scripts to save on execution gas.',
-      quote: '"We\'ve automated all of that. The agent drafts transactions, you verify and sign."',
+      quote: '"Everything is automated. The agent drafts transactions, you verify and sign."',
       badge: 'APY COMPARE',
       compareTitle: 'Compound Rate Spread',
       compareDesc: 'Comparing traditional dollars vs Base positions.',
@@ -1029,15 +1029,15 @@ export const translations: Record<'ru' | 'en', TranslationSchema> = {
       deltaText: 'Every $1,000 sitting in standard savings earns roughly $5 annually. Deployed actively on Base, that same dollar compiles up to $250 in expected yield.',
     },
     whatWeDo: {
-      tagline: 'SECTION 02 — WHAT WE DO',
+      tagline: 'SECTION 02 — HOW IT WORKS',
       title: 'Smart DeFi automation. Analyzed by AI. Controlled by you.',
-      subline: "We help automate actions on your Base Account — Coinbase's smart passkey wallet wrapper. The agent only prepares transaction drafts; you never share your keys.",
+      subline: "The platform facilitates transaction automation on your Base Account — Coinbase's smart passkey wallet wrapper. The agent only prepares transaction drafts; keys are never shared.",
       step1Title: 'Open a Base Account',
       step1Desc: "Takes just 2 minutes. Powered entirely by Coinbase's smart passkey wallet backend underneath.",
       step2Title: 'Fund account with USDC',
       step2Desc: 'Fund with the leading fully-backed, US-regulated stablecoin pegged 1:1 to the US dollar.',
       step3Title: 'AI daily opportunity sweeps',
-      step3Desc: 'Our MCP bot scans across 6+ protocols (Morpho, Moonwell, Fluid, Aerodrome, Avantis) hourly for yield-risk metrics.',
+      step3Desc: 'The MCP bot scans across 6+ protocols (Morpho, Moonwell, Fluid, Aerodrome, Avantis) hourly for yield-risk metrics.',
       step4Title: 'Transaction preparation',
       step4Desc: 'The agent drafts a transaction sheet detailing gas metrics, slippage margins, and risk bounds.',
       step5Title: 'Biometric signature',
@@ -1049,7 +1049,7 @@ export const translations: Record<'ru' | 'en', TranslationSchema> = {
     tech: {
       tagline: 'SECTION 03 — THE TECHNOLOGY',
       title: "Built on the same stack as the world's top DeFi funds.",
-      subline: 'We integrate directly with secure, audited, and open-source blue-chip protocols. Click any stack vector to inspect its architecture.',
+      subline: 'Integration is direct with secure, audited, and open-source blue-chip protocols. Click any stack vector to inspect its architecture.',
       cornerBadge: 'STACK_ID: ',
       activeSpecs: 'ACTIVE DESTRUCTURING SPECS',
       bottomNote: 'All logic is open source and verifiable on GitHub. You can check every compiler hash independently.',
@@ -1098,7 +1098,7 @@ export const translations: Record<'ru' | 'en', TranslationSchema> = {
         liveNote: '*APY figures are live variables pulled from smart logs. Past performance stays separate from future outcomes.',
       },
       principlesTitle: 'Safety Safeguards',
-      principlesSubtitle: 'What we never do',
+      principlesSubtitle: 'AI Safety Safeguards',
       metricsTitle: 'Yield Metrics',
       metricsSubtitle: 'Scenario Yield Simulation',
       metricsDesc: 'How much does a simulated allocation of $1,000 USDC earn across different configurations under current variable protocol rates?',
@@ -1116,10 +1116,10 @@ export const translations: Record<'ru' | 'en', TranslationSchema> = {
     whoThisIsFor: {
       tagline: 'SECTION 05 — SOVEREIGN SAVINGS',
       title: "Built for people who've decided their money belongs to them — not their bank.",
-      subline: "You don't need to distrust the traditional financial system to be here. But if you do — you're in the right place. We share a simple conviction: the safest place for your savings is where no intermediary can reach them.",
+      subline: "You don't need to distrust the traditional financial system to be here. But if you do — you're in the right place. The platform is built on a simple conviction: the safest place for savings is where no intermediary can reach them.",
       convictions: {
         c1Title: 'Unpredictable Local Systems',
-        c1Desc: 'Watched banks freeze accounts, currencies devalue overnight, and capital restrictions appear? We offer an alternative path.',
+        c1Desc: 'Watched banks freeze accounts, currencies devalue overnight, and capital restrictions appear? DeFi automation offers an alternative path.',
         c2Title: 'Financial Sovereignty',
         c2Desc: 'Your dollars should compile for you, not sit inside institutions that block, inflate, or compromise them at whim.',
         c3Title: 'Borderless DeFi Yield',
@@ -1154,7 +1154,7 @@ export const translations: Record<'ru' | 'en', TranslationSchema> = {
       compliance: {
         tagline: 'AUDITING PROTOCOLS',
         title: 'Pre-trade compliance check',
-        subline: 'Before presenting any allocation rebalance recommendation, or signing transactions, our system validates every metrics node.',
+        subline: 'Before presenting any allocation rebalance recommendation, or signing transactions, the system validates every metrics node.',
         badge: 'SAFETY SIGNAL STATUS: ',
       },
       safeguards: {
@@ -1163,16 +1163,16 @@ export const translations: Record<'ru' | 'en', TranslationSchema> = {
         riskBoundsTitle: 'Tiered risk bounds',
         riskBoundsDesc: 'Conservative strategies stay active as your root defaults. Dynamic high-yield vaults require explicit approved credentials.',
         gasBufferTitle: 'Gas Buffer requirement',
-        gasBufferDesc: 'We strictly maintain small reserve gas quantities of Ethereum (ETH) in your wallet to confirm withdrawals whenever conditions turn hostile.',
+        gasBufferDesc: 'Maintaining small reserve gas quantities of Ethereum (ETH) in the wallet is recommended to confirm withdrawals whenever conditions turn hostile.',
         noAutoTitle: 'No autonomous transactions',
         noAutoDesc: 'The AI scans conditions and prepares transaction drafts, but only your physical TouchID/FaceID signature commits operations to the blockchain.',
-        bottomNote: '*We never ask where you are from. We never audit why you want control of your money. That is your core priority. We ensure standard capital efficacy.',
+        bottomNote: '*No geographic restrictions apply. No audits are conducted on user intentions. This is a core priority of self-custody. Capital efficacy remains standard.',
       },
     },
     transparency: {
       tagline: 'SECTION 06 — TRANSPARENCY',
       title: 'Every number is verifiable. On-chain. By anyone.',
-      subline: 'Unlike opaque traditional offshore funds, there is zero room to guess or hide here. Every ledger update can be cross-audited on-chain via public network browsers.',
+      subline: 'Unlike opaque traditional offshore funds, all data is transparent here. Every ledger update can be cross-audited on-chain via public network browsers.',
       c1Title: 'BaseScan browser integration',
       c1Desc: 'Every compounding event, allocation movement, and rebalance can be checked by searching your account address on basescan.org.',
       c2Title: 'Direct Protocol verification links',
@@ -1188,7 +1188,7 @@ export const translations: Record<'ru' | 'en', TranslationSchema> = {
       tagline: 'SECTION 07 — STRATEGY SELECTIONS',
       title: 'Data-driven analysis. Prepared by AI. Signed by you.',
       sweepsTitle: 'Daily Sweeps',
-      sweepsDesc: 'Our smart scheduler pulls APYs across all protocols, flagging positions where yield drops or utilization spikes.',
+      sweepsDesc: 'The smart scheduler pulls APYs across all protocols, flagging positions where yield drops or utilization spikes.',
       weightsTitle: 'Scoring Weights',
       weightsDesc: 'Candidate pools are graded on expected net APY, TVL buffers, collateral assets quality, target liquidity depth, and gas expenses.',
       boundsTitle: 'Migration Threshold Bounds',
@@ -1231,12 +1231,12 @@ export const translations: Record<'ru' | 'en', TranslationSchema> = {
     faq: {
       tagline: 'SECTION 09 — ACCRUED FAQ',
       title: 'Frequently Answered Questions',
-      subline: 'We focus on complete clarity. If you have additional inquiries, connect inside on-chain discussion channels.',
+      subline: 'Complete clarity is the priority. If you have additional inquiries, connect inside on-chain discussion channels.',
     },
     liveHealth: {
       tagline: 'SECTION 10 — AI AGENT ACTIVITY LOG',
       title: 'Public Demo Wallet: AI Agent Activity Log',
-      subline: 'Below is a technical demonstration of how the agent reads DeFi data and prepares transactions. This demo wallet is controlled by our team, contains no customer funds, and is not a representation of expected user returns.',
+      subline: 'Below is a technical demonstration of how the agent reads DeFi data and prepares transactions. This demo wallet is a company test wallet, contains no customer funds, and is not a representation of expected user returns.',
       demoDisclosure: 'Demo Account Disclosure: This wallet is controlled by the company. No customer funds are included. This is a technical demonstration of agent behavior, not a performance advertisement.',
       metrics: {
         tvl: 'DEMO WALLET SIMULATION SIZE',
@@ -1296,7 +1296,7 @@ export const translations: Record<'ru' | 'en', TranslationSchema> = {
       reportTitle: 'Position Report Request',
       reportDesc: 'Request a detailed statement of active demo wallet positions, historical performance logs, and AI audit steps.',
       reportBtn: 'Request report from report@baseyieldfund.com',
-      legalNote: '*The template will open in your native email client. We never request credentials, seed phrases, or private keys.',
+      legalNote: '*The template will open in your native email client. Credentials, seed phrases, or private keys are never requested.',
     },
     calculator: {
       badge: 'YIELD CALCULATOR',
@@ -1394,7 +1394,7 @@ export const translations: Record<'ru' | 'en', TranslationSchema> = {
           'Stablecoin peg deviation stays & fraction < 0.1%',
         ],
       },
-      bottomNote: 'This simulator runs directly in safety sandbox. It portrays the real-time interaction between our strategy scanning models and your secure Coinbase Smart Account.',
+      bottomNote: 'This simulator runs directly in safety sandbox. It portrays the real-time interaction between the strategy scanning models and your secure Coinbase Smart Account.',
     },
 
     protocols: [
@@ -1526,15 +1526,15 @@ export const translations: Record<'ru' | 'en', TranslationSchema> = {
     faqs: [
       {
         question: 'Is my money safe?',
-        answer: 'Your funds remain in your Base Account — a Coinbase-secured smart contract wallet (ERC-4337). We never have direct custody of your funds. Every transaction, allocation shift, or withdrawal requires your explicit cryptographically signed approval.'
+        answer: 'Your funds remain in your Base Account — a Coinbase-secured smart contract wallet (ERC-4337). Direct custody of funds by any third party is completely excluded. Every transaction, allocation shift, or withdrawal requires your explicit cryptographically signed approval.'
       },
       {
         question: 'What if I want to stop and withdraw?',
-        answer: 'You can withdraw at any time. There are no lockups, and you hold the keys. Morpho and Moonwell withdrawals typically process within minutes back to your main wallet. During rare high-utilization periods on certain lending markets, it could take a bit longer, which is why we maintain liquid margins.'
+        answer: 'You can withdraw at any time. There are no lockups, and you hold the keys. Morpho and Moonwell withdrawals typically process within minutes back to your main wallet. During rare high-utilization periods on certain lending markets, it could take a bit longer, which is why maintaining a liquid margin is recommended.'
       },
       {
         question: 'What are the fees?',
-        answer: 'The underlying DeFi protocols (such as Morpho and Moonwell) charge natural raw performance fees (0–15%) on yield, which is already deducted from the APY figures shown. Our platform charges a modest fee only on yield successfully generated.'
+        answer: 'The underlying DeFi protocols (such as Morpho and Moonwell) charge natural raw performance fees (0–15%) on yield, which is already deducted from the APY figures shown. The platform interface charges a modest fee only on yield successfully generated.'
       },
       {
         question: 'What are the core risks involved?',
@@ -1546,7 +1546,7 @@ export const translations: Record<'ru' | 'en', TranslationSchema> = {
       },
       {
         question: 'How are taxes handled?',
-        answer: 'We provide automated, detailed tax event tracking. Every deposit, yield payout, rebalance, and on-chain fee is captured in an elegant, structured format that is ready to download and share with your CPA at the end of the year.'
+        answer: 'Automated, detailed tax event tracking is built in. Every deposit, yield payout, rebalance, and on-chain fee is captured in an elegant, structured format that is ready to download and share with your CPA at the end of the year.'
       }
     ],
     notDoPrinciples: [
