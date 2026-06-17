@@ -69,6 +69,13 @@ export const EVENTS = [
     descEn: 'Avantis proceeds → bbqUSDC vault @ 8.85% APY',
     pnlBase: 0, type: 'open' as const,
   },
+  {
+    dateRu: '16 июн 2026', dateEn: 'Jun 16, 2026',
+    nameRu: 'HY v1.1 APY: 8.85% → 5.18%', nameEn: 'HY v1.1 APY: 8.85% → 5.18%',
+    descRu: '−3.67% за сутки — yield-premium над Prime сузился с +4.1% до +1.1%',
+    descEn: '−3.67% overnight — yield premium over Prime narrowed from +4.1% to +1.1%',
+    pnlBase: 0, type: 'open' as const,
+  },
 ];
 
 // Active positions — update as portfolio changes
@@ -76,11 +83,11 @@ export const EVENTS = [
 export const POSITIONS = [
   {
     nameRu: 'Morpho Prime (steakUSDC)', nameEn: 'Morpho Prime (steakUSDC)',
-    allocation: 0.50106, apy: 0.0477,
+    allocation: 0.50103, apy: 0.0405,
   },
   {
     nameRu: 'Morpho HY v1.1 (bbqUSDC)', nameEn: 'Morpho HY v1.1 (bbqUSDC)',
-    allocation: 0.49335, apy: 0.0885,
+    allocation: 0.49335, apy: 0.0518,
   },
 ];
 
