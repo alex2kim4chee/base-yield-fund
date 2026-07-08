@@ -132,6 +132,27 @@ export const EVENTS = [
     descEn: '$49,335 × 4 days @ ~5.33–6.59% APY — unrealized in vault',
     pnlBase: +0.032, type: 'pos' as const,
   },
+  {
+    dateRu: '8 июл 2026', dateEn: 'Jul 8, 2026',
+    nameRu: 'HY v1.1 APY: 5.33% → 8.62%', nameEn: 'HY v1.1 APY: 5.33% → 8.62%',
+    descRu: '+3.29% — возврат к уровням открытия; весь high-yield тир Morpho вырос',
+    descEn: '+3.29% — back to opening levels; broad high-yield tier spike on Morpho',
+    pnlBase: 0, type: 'open' as const,
+  },
+  {
+    dateRu: '6–8 июл 2026', dateEn: 'Jul 6–8, 2026',
+    nameRu: 'Morpho Prime: yield (2 дня)', nameEn: 'Morpho Prime: yield (2 days)',
+    descRu: '$50 000 × 2 дня @ ~4.05% APY — unrealized в vault',
+    descEn: '$50,000 × 2 days @ ~4.05% APY — unrealized in vault',
+    pnlBase: +0.012, type: 'pos' as const,
+  },
+  {
+    dateRu: '6–8 июл 2026', dateEn: 'Jul 6–8, 2026',
+    nameRu: 'HY v1.1: yield (2 дня)', nameEn: 'HY v1.1: yield (2 days)',
+    descRu: '$49 335 × 2 дня @ ~5.33–8.62% APY — unrealized в vault',
+    descEn: '$49,335 × 2 days @ ~5.33–8.62% APY — unrealized in vault',
+    pnlBase: +0.017, type: 'pos' as const,
+  },
 ];
 
 // Active positions — update as portfolio changes
@@ -139,11 +160,11 @@ export const EVENTS = [
 export const POSITIONS = [
   {
     nameRu: 'Morpho Prime (steakUSDC)', nameEn: 'Morpho Prime (steakUSDC)',
-    allocation: 0.50226, apy: 0.0393,
+    allocation: 0.50238, apy: 0.0405,
   },
   {
     nameRu: 'Morpho HY v1.1 (bbqUSDC)', nameEn: 'Morpho HY v1.1 (bbqUSDC)',
-    allocation: 0.49497, apy: 0.0533,
+    allocation: 0.49514, apy: 0.0862,
   },
 ];
 
@@ -290,8 +311,8 @@ export default function MetricsDashboard() {
             {s('Журнал аудита транзакций', 'Transaction Audit Log')}
           </h4>
         </div>
-        <div className="divide-y divide-slate-100">
-          {EVENTS.map((ev, i) => {
+        <div className="divide-y divide-slate-100 max-h-[380px] overflow-y-auto">
+          {[...EVENTS].reverse().map((ev, i) => {
             const val = ev.pnlBase * k;
             const hasVal = ev.pnlBase !== 0;
             const barW = hasVal && maxAbsVal > 0
