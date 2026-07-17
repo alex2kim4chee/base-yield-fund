@@ -223,6 +223,27 @@ export const EVENTS = [
     descEn: '$49,335 × 1 day @ ~4.81% APY — unrealized in vault',
     pnlBase: +0.008, type: 'pos' as const,
   },
+  {
+    dateRu: '15 июл 2026', dateEn: 'Jul 15, 2026',
+    nameRu: 'HY v1.1 APY: инверсия ниже Prime-тира', nameEn: 'HY v1.1 APY: inverts below prime tier',
+    descRu: '4.81% → 3.67% — впервые ниже Gauntlet Prime (4.31%); TVL vault сокращается ($3.6M → $2.96M)',
+    descEn: '4.81% → 3.67% — first time below Gauntlet Prime (4.31%); vault TVL shrinking ($3.6M → $2.96M)',
+    pnlBase: 0, type: 'neg' as const,
+  },
+  {
+    dateRu: '14–17 июл 2026', dateEn: 'Jul 14–17, 2026',
+    nameRu: 'Morpho Prime: yield (3 дня)', nameEn: 'Morpho Prime: yield (3 days)',
+    descRu: '$50 000 × 3 дня @ ~4.05–4.09% APY — unrealized в vault',
+    descEn: '$50,000 × 3 days @ ~4.05–4.09% APY — unrealized in vault',
+    pnlBase: +0.016, type: 'pos' as const,
+  },
+  {
+    dateRu: '14–17 июл 2026', dateEn: 'Jul 14–17, 2026',
+    nameRu: 'HY v1.1: yield (3 дня)', nameEn: 'HY v1.1: yield (3 days)',
+    descRu: '$49 335 × 3 дня @ ~3.42–3.67% APY — unrealized в vault; TVL продолжает падать ($2.96M → $2.67M)',
+    descEn: '$49,335 × 3 days @ ~3.42–3.67% APY — unrealized in vault; TVL keeps falling ($2.96M → $2.67M)',
+    pnlBase: +0.015, type: 'pos' as const,
+  },
 ];
 
 // Active positions — update as portfolio changes
@@ -230,11 +251,11 @@ export const EVENTS = [
 export const POSITIONS = [
   {
     nameRu: 'Morpho Prime (steakUSDC)', nameEn: 'Morpho Prime (steakUSDC)',
-    allocation: 0.50271, apy: 0.0423,
+    allocation: 0.50287, apy: 0.0405,
   },
   {
     nameRu: 'Morpho HY v1.1 (bbqUSDC)', nameEn: 'Morpho HY v1.1 (bbqUSDC)',
-    allocation: 0.49558, apy: 0.0481,
+    allocation: 0.49573, apy: 0.0363,
   },
 ];
 
