@@ -314,6 +314,27 @@ export const EVENTS = [
     descEn: '$49,335 × 1 day @ ~3.63% APY — unrealized in vault',
     pnlBase: +0.006, type: 'pos' as const,
   },
+  {
+    dateRu: '24 июл 2026', dateEn: 'Jul 24, 2026',
+    nameRu: 'HY v1.1 APY: восстановление выше Prime', nameEn: 'HY v1.1 APY: recovers above prime tier',
+    descRu: '3.63% → 4.40% — снова выше нашего Prime (4.42% рынок в целом вырос); весь Morpho USDC-рынок скакнул вверх',
+    descEn: '3.63% → 4.40% — recovered as broad Morpho USDC market jumped up (our Prime hit 4.42%)',
+    pnlBase: 0, type: 'pos' as const,
+  },
+  {
+    dateRu: '23–24 июл 2026', dateEn: 'Jul 23–24, 2026',
+    nameRu: 'Morpho Prime: yield (1 день)', nameEn: 'Morpho Prime: yield (1 day)',
+    descRu: '$50 000 × 1 день @ ~4.42% APY — unrealized в vault',
+    descEn: '$50,000 × 1 day @ ~4.42% APY — unrealized in vault',
+    pnlBase: +0.006, type: 'pos' as const,
+  },
+  {
+    dateRu: '23–24 июл 2026', dateEn: 'Jul 23–24, 2026',
+    nameRu: 'HY v1.1: yield (1 день)', nameEn: 'HY v1.1: yield (1 day)',
+    descRu: '$49 335 × 1 день @ ~4.40% APY — unrealized в vault',
+    descEn: '$49,335 × 1 day @ ~4.40% APY — unrealized in vault',
+    pnlBase: +0.005, type: 'pos' as const,
+  },
 ];
 
 // Active positions — update as portfolio changes
@@ -321,11 +342,11 @@ export const EVENTS = [
 export const POSITIONS = [
   {
     nameRu: 'Morpho Prime (steakUSDC)', nameEn: 'Morpho Prime (steakUSDC)',
-    allocation: 0.50321, apy: 0.0405,
+    allocation: 0.50326, apy: 0.0442,
   },
   {
     nameRu: 'Morpho HY v1.1 (bbqUSDC)', nameEn: 'Morpho HY v1.1 (bbqUSDC)',
-    allocation: 0.49608, apy: 0.0363,
+    allocation: 0.49613, apy: 0.0440,
   },
 ];
 
