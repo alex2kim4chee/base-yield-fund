@@ -419,18 +419,33 @@ export const EVENTS = [
     descEn: '$49,335 × 1 day @ ~3.33% APY — unrealized in vault',
     pnlBase: +0.005, type: 'pos' as const,
   },
+  {
+    dateRu: '30–31 июл 2026', dateEn: 'Jul 30–31, 2026',
+    nameRu: 'Morpho Prime + HY v1.1: yield (1 день)', nameEn: 'Morpho Prime + HY v1.1: yield (1 day)',
+    descRu: '$50 000 @ ~4.05% + $49 335 @ ~3.31% APY — unrealized перед закрытием позиций',
+    descEn: '$50,000 @ ~4.05% + $49,335 @ ~3.31% APY — unrealized just before closing positions',
+    pnlBase: +0.009, type: 'pos' as const,
+  },
+  {
+    dateRu: '31 июл 2026', dateEn: 'Jul 31, 2026',
+    nameRu: 'Миграция: Prime v1 → v2, HY v1.1 → v2', nameEn: 'Migration: Prime v1 → v2, HY v1.1 → v2',
+    descRu: 'Prime v2: тот же куратор, 0% fee (было 5%), TVL $568M (было $31M). HY v2: TVL $28M — ушли из HY v1.1 после обвала его TVL на 46% за сутки. Доход зафиксирован: +$368 (Prime) и +$314 (HY) на масштабе ×1000',
+    descEn: 'Prime v2: same curator, 0% fee (was 5%), $568M TVL (was $31M). HY v2: $28M TVL — exited HY v1.1 after its TVL collapsed 46% in 24h. Yield realized: +$368 (Prime) and +$314 (HY) at ×1000 scale',
+    pnlBase: 0, type: 'open' as const,
+  },
 ];
 
 // Active positions — update as portfolio changes
 // allocation: fraction of base $100 capital actually deployed (e.g. $50.106 → 0.50106)
+// fee: curator/performance fee already netted out of apy (display only — apy is always net)
 export const POSITIONS = [
   {
-    nameRu: 'Morpho Prime (steakUSDC)', nameEn: 'Morpho Prime (steakUSDC)',
-    allocation: 0.50363, apy: 0.0415,
+    nameRu: 'Morpho Prime v2 (steakUSDC)', nameEn: 'Morpho Prime v2 (steakUSDC)',
+    allocation: 0.50368, apy: 0.0437, fee: 0,
   },
   {
-    nameRu: 'Morpho HY v1.1 (bbqUSDC)', nameEn: 'Morpho HY v1.1 (bbqUSDC)',
-    allocation: 0.49645, apy: 0.0333,
+    nameRu: 'Morpho HY v2 (bbqUSDC)', nameEn: 'Morpho HY v2 (bbqUSDC)',
+    allocation: 0.49649, apy: 0.0477, fee: 0.05,
   },
 ];
 
@@ -669,7 +684,7 @@ export default function MetricsDashboard() {
             <span className="font-semibold text-slate-700">
               {language === 'ru' ? p.nameRu : p.nameEn}
             </span>
-            {` ${(p.apy * 100).toFixed(2)}%`}
+            {` ${(p.apy * 100).toFixed(2)}% (${(p.fee * 100).toFixed(0)}% ${s('комиссия', 'fee')})`}
             {i < POSITIONS.length - 1 ? ' + ' : '. '}
           </span>
         ))}
