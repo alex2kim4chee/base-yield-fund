@@ -545,6 +545,20 @@ export const EVENTS = [
     descEn: '$49,649 × 1 day @ ~5.35% APY (net, 5% fee) — 14 days with zero action since migration',
     pnlBase: +0.006, type: 'pos' as const,
   },
+  {
+    dateRu: '14–17 авг 2026', dateEn: 'Aug 14–17, 2026',
+    nameRu: 'Morpho Prime v2: yield (3 дня)', nameEn: 'Morpho Prime v2: yield (3 days)',
+    descRu: '$50 368 × 3 дня @ ~4.12–4.14% APY — unrealized в vault',
+    descEn: '$50,368 × 3 days @ ~4.12–4.14% APY — unrealized in vault',
+    pnlBase: +0.017, type: 'pos' as const,
+  },
+  {
+    dateRu: '14–17 авг 2026', dateEn: 'Aug 14–17, 2026',
+    nameRu: 'Morpho HY v2: yield (3 дня)', nameEn: 'Morpho HY v2: yield (3 days)',
+    descRu: '$49 649 × 3 дня @ ~5.23–5.35% APY (net, 5% fee) — unrealized в vault',
+    descEn: '$49,649 × 3 days @ ~5.23–5.35% APY (net, 5% fee) — unrealized in vault',
+    pnlBase: +0.022, type: 'pos' as const,
+  },
 ];
 
 // Active positions — update as portfolio changes
@@ -553,11 +567,11 @@ export const EVENTS = [
 export const POSITIONS = [
   {
     nameRu: 'Morpho Prime v2 (steakUSDC)', nameEn: 'Morpho Prime v2 (steakUSDC)',
-    allocation: 0.50452, apy: 0.0412, fee: 0,
+    allocation: 0.50469, apy: 0.0414, fee: 0,
   },
   {
     nameRu: 'Morpho HY v2 (bbqUSDC)', nameEn: 'Morpho HY v2 (bbqUSDC)',
-    allocation: 0.49751, apy: 0.0535, fee: 0.05,
+    allocation: 0.49773, apy: 0.0523, fee: 0.05,
   },
 ];
 
