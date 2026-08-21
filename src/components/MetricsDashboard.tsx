@@ -615,6 +615,27 @@ export const EVENTS = [
     descEn: '$49,649 × 1 day @ ~4.90% APY (net, 5% fee) — unrealized in vault',
     pnlBase: +0.010, type: 'pos' as const,
   },
+  {
+    dateRu: '21 авг 2026', dateEn: 'Aug 21, 2026',
+    nameRu: 'ETH: +33% за 3 дня', nameEn: 'ETH: +33% over 3 days',
+    descRu: '$1 912 → $2 098 → $2 318 → $2 540 за ту же 0.00458 ETH — газовый буфер подорожал, DeFi-позиции не затронуты',
+    descEn: '$1,912 → $2,098 → $2,318 → $2,540 for the same 0.00458 ETH — gas buffer value rose, DeFi positions unaffected',
+    pnlBase: 0, type: 'open' as const,
+  },
+  {
+    dateRu: '20–21 авг 2026', dateEn: 'Aug 20–21, 2026',
+    nameRu: 'Morpho Prime v2: yield (1 день)', nameEn: 'Morpho Prime v2: yield (1 day)',
+    descRu: '$50 368 × 1 день @ ~4.18% APY — unrealized в vault; TVL vault снизился ($579M → $536M), APY не пострадал',
+    descEn: '$50,368 × 1 day @ ~4.18% APY — unrealized in vault; vault TVL fell ($579M → $536M), APY unaffected',
+    pnlBase: +0.006, type: 'pos' as const,
+  },
+  {
+    dateRu: '20–21 авг 2026', dateEn: 'Aug 20–21, 2026',
+    nameRu: 'Morpho HY v2: yield (1 день)', nameEn: 'Morpho HY v2: yield (1 day)',
+    descRu: '$49 649 × 1 день @ ~4.92% APY (net, 5% fee) — unrealized в vault',
+    descEn: '$49,649 × 1 day @ ~4.92% APY (net, 5% fee) — unrealized in vault',
+    pnlBase: +0.007, type: 'pos' as const,
+  },
 ];
 
 // Active positions — update as portfolio changes
@@ -623,11 +644,11 @@ export const EVENTS = [
 export const POSITIONS = [
   {
     nameRu: 'Morpho Prime v2 (steakUSDC)', nameEn: 'Morpho Prime v2 (steakUSDC)',
-    allocation: 0.50487, apy: 0.0412, fee: 0,
+    allocation: 0.50493, apy: 0.0418, fee: 0,
   },
   {
     nameRu: 'Morpho HY v2 (bbqUSDC)', nameEn: 'Morpho HY v2 (bbqUSDC)',
-    allocation: 0.49796, apy: 0.0490, fee: 0.05,
+    allocation: 0.49803, apy: 0.0492, fee: 0.05,
   },
 ];
 
