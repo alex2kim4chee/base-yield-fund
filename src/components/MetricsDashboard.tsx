@@ -741,6 +741,27 @@ export const EVENTS = [
     descEn: '$49,649 × 1 day @ ~4.90% APY (net, 5% fee) — unrealized in vault',
     pnlBase: +0.005, type: 'pos' as const,
   },
+  {
+    dateRu: '18 сен 2026', dateEn: 'Sep 18, 2026',
+    nameRu: 'Скан: reward-ловушка 9.22% отклонена', nameEn: 'Scan: 9.22% reward-driven vault rejected',
+    descRu: 'Noon Ecosystem Vault: из 9.22% целых 7.15% — USDC-rewards, органика ~2.1%; новый vault К3 cbMaxxxing (5.18%) — незнакомый куратор, требует онбординга. Позиции не меняем',
+    descEn: 'Noon Ecosystem Vault: of 9.22%, 7.15% is USDC rewards, organic ~2.1%; new К3 cbMaxxxing vault (5.18%) — unfamiliar curator, needs onboarding. Positions unchanged',
+    pnlBase: 0, type: 'open' as const,
+  },
+  {
+    dateRu: '10–18 сен 2026', dateEn: 'Sep 10–18, 2026',
+    nameRu: 'Morpho Prime v2: yield (8 дней)', nameEn: 'Morpho Prime v2: yield (8 days)',
+    descRu: '$50 368 × 8 дней @ ~4.26–4.32% APY — unrealized в vault',
+    descEn: '$50,368 × 8 days @ ~4.26–4.32% APY — unrealized in vault',
+    pnlBase: +0.047, type: 'pos' as const,
+  },
+  {
+    dateRu: '10–18 сен 2026', dateEn: 'Sep 10–18, 2026',
+    nameRu: 'Morpho HY v2: yield (8 дней)', nameEn: 'Morpho HY v2: yield (8 days)',
+    descRu: '$49 649 × 8 дней @ ~4.90–4.97% APY (net, 5% fee) — unrealized в vault',
+    descEn: '$49,649 × 8 days @ ~4.90–4.97% APY (net, 5% fee) — unrealized in vault',
+    pnlBase: +0.053, type: 'pos' as const,
+  },
 ];
 
 // Active positions — update as portfolio changes
@@ -749,11 +770,11 @@ export const EVENTS = [
 export const POSITIONS = [
   {
     nameRu: 'Morpho Prime v2 (steakUSDC)', nameEn: 'Morpho Prime v2 (steakUSDC)',
-    allocation: 0.50609, apy: 0.0426, fee: 0,
+    allocation: 0.50656, apy: 0.0432, fee: 0,
   },
   {
     nameRu: 'Morpho HY v2 (bbqUSDC)', nameEn: 'Morpho HY v2 (bbqUSDC)',
-    allocation: 0.49938, apy: 0.0490, fee: 0.05,
+    allocation: 0.49991, apy: 0.0497, fee: 0.05,
   },
 ];
 
